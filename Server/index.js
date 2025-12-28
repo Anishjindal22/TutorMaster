@@ -47,7 +47,7 @@ app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 
 
-//def route
+//def                 
 
 app.get("/", (req, res) => {
 	return res.json({
