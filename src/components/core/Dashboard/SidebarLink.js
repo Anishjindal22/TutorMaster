@@ -13,27 +13,29 @@ const SidebarLink = ({link, iconName}) => {
     const matchRoute = (route) => {
         return matchPath({ path: route }, location.pathname)
       }
+      
+    const isActive = matchRoute(link.path);
+
   return (
     <NavLink
     to={link.path}
-    // TODO: Reason behind this
     onClick={() => dispatch(resetCourseState())} 
-    className={`relative px-8 py-2 text-sm font-medium ${
-      matchRoute(link.path)
-        ? "bg-yellow-800 text-yellow-50"
-        : "bg-opacity-0 text-richblack-300"
-    } transition-all duration-200`}
+    className={`group relative flex items-center gap-x-3 px-6 py-3.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden border ${
+      isActive
+        ? "bg-surface-light border-surface-border text-white"
+        : "bg-transparent border-transparent text-text-muted hover:bg-surface-dim hover:text-white"
+    }`}
   > 
-    {/* Yellow bar */}
+    {/* Active indicator bar */}
     <span
-      className={`absolute left-0 top-0 h-full w-[0.15rem] bg-yellow-50 ${
-        matchRoute(link.path) ? "opacity-100" : "opacity-0"
+      className={`absolute left-0 top-1/2 -translate-y-1/2 h-3/4 w-[3px] rounded-r-full bg-text-main transition-all duration-300 origin-left ${
+        isActive ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0 group-hover:scale-y-50 group-hover:opacity-50"
       }`}
     ></span>
-    <div className="flex items-center gap-x-2">
-      {/* Icon Goes Here */}
-      <Icon className="text-lg" />
-      <span>{link.name}</span>
+
+    <div className="relative z-10 flex items-center gap-x-3">
+        <Icon className={`text-xl transition-transform duration-300 ${isActive ? "scale-105" : "group-hover:scale-105"}`} />
+        <span className="tracking-wide font-inter">{link.name}</span>
     </div>
   </NavLink>
   )

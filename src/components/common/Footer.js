@@ -2,9 +2,6 @@ import React from "react";
 import { FooterLink2 } from "../../data/footer-links";
 import { Link } from "react-router-dom";
 
-// Images
-import Logo from "../../assets/Logo/Logo-Full-Light.png";
-
 // Icons
 import { FaFacebook, FaGoogle, FaTwitter, FaYoutube } from "react-icons/fa";
 
@@ -24,14 +21,17 @@ const Community = ["Forums", "Chapters", "Events"];
 
 const Footer = () => {
   return (
-    <div className="bg-richblack-800">
-      <div className="flex lg:flex-row gap-8 items-center justify-between w-11/12 max-w-maxContent text-richblack-400 leading-6 mx-auto relative py-14">
-        <div className="border-b w-[100%] flex flex-col lg:flex-row pb-5 border-richblack-700">
+    <div className="bg-surface-dark border-t border-surface-border">
+      <div className="flex lg:flex-row gap-8 items-center justify-between w-11/12 max-w-maxContent text-text-muted leading-6 mx-auto relative pt-16 pb-8">
+        <div className="border-b w-[100%] flex flex-col lg:flex-row pb-5 border-surface-border">
           {/* Section 1 */}
-          <div className="lg:w-[50%] flex flex-wrap flex-row justify-between lg:border-r lg:border-richblack-700 pl-3 lg:pr-5 gap-3">
+          <div className="lg:w-[50%] flex flex-wrap flex-row justify-between lg:border-r lg:border-surface-border pl-3 lg:pr-10 gap-3">
             <div className="w-[30%] flex flex-col gap-3 lg:w-[30%] mb-7 lg:pl-0">
-              <img src={Logo} alt="" className="object-contain" />
-              <h1 className="text-richblack-50 font-semibold text-[16px]">
+              <div className="flex items-center gap-3 mt-1">
+                <span className="h-8 w-8 rounded-full border border-text-main text-text-main grid place-items-center font-semibold text-sm">TM</span>
+                <span className="text-lg font-semibold tracking-tight text-white">Tutor Master</span>
+              </div>
+              <h1 className="text-white font-semibold text-[16px] mt-4">
                 Company
               </h1>
               <div className="flex flex-col gap-2">
@@ -39,24 +39,23 @@ const Footer = () => {
                   return (
                     <div
                       key={i}
-                      className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
+                      className="text-[14px] cursor-pointer hover:text-brand-secondary transition-all duration-200"
                     >
                       <Link to={ele.toLowerCase()}>{ele}</Link>
                     </div>
                   );
                 })}
               </div>
-              <div className="flex gap-3 text-lg">
-                <FaFacebook />
-                <FaGoogle />
-                <FaTwitter />
-                <FaYoutube />
+              <div className="flex gap-4 text-xl mt-4">
+                <FaFacebook className="hover:text-[#1877F2] transition-colors cursor-pointer" />
+                <FaGoogle className="hover:text-[#EA4335] transition-colors cursor-pointer" />
+                <FaTwitter className="hover:text-[#1DA1F2] transition-colors cursor-pointer" />
+                <FaYoutube className="hover:text-[#FF0000] transition-colors cursor-pointer" />
               </div>
-              <div></div>
             </div>
 
             <div className="w-[48%] lg:w-[30%] mb-7 lg:pl-0">
-              <h1 className="text-richblack-50 font-semibold text-[16px]">
+              <h1 className="text-white font-semibold text-[16px]">
                 Resources
               </h1>
 
@@ -65,7 +64,7 @@ const Footer = () => {
                   return (
                     <div
                       key={index}
-                      className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
+                      className="text-[14px] cursor-pointer hover:text-brand-secondary transition-all duration-200"
                     >
                       <Link to={ele.split(" ").join("-").toLowerCase()}>
                         {ele}
@@ -75,16 +74,16 @@ const Footer = () => {
                 })}
               </div>
 
-              <h1 className="text-richblack-50 font-semibold text-[16px] mt-7">
+              <h1 className="text-white font-semibold text-[16px] mt-7">
                 Support
               </h1>
-              <div className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200 mt-2">
+              <div className="text-[14px] cursor-pointer hover:text-brand-secondary transition-all duration-200 mt-2">
                 <Link to={"/help-center"}>Help Center</Link>
               </div>
             </div>
 
             <div className="w-[48%] lg:w-[30%] mb-7 lg:pl-0">
-              <h1 className="text-richblack-50 font-semibold text-[16px]">
+              <h1 className="text-white font-semibold text-[16px]">
                 Plans
               </h1>
 
@@ -93,7 +92,7 @@ const Footer = () => {
                   return (
                     <div
                       key={index}
-                      className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
+                      className="text-[14px] cursor-pointer hover:text-brand-primary transition-all duration-200"
                     >
                       <Link to={ele.split(" ").join("-").toLowerCase()}>
                         {ele}
@@ -102,7 +101,7 @@ const Footer = () => {
                   );
                 })}
               </div>
-              <h1 className="text-richblack-50 font-semibold text-[16px] mt-7">
+              <h1 className="text-white font-semibold text-[16px] mt-7">
                 Community
               </h1>
 
@@ -111,7 +110,7 @@ const Footer = () => {
                   return (
                     <div
                       key={index}
-                      className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
+                      className="text-[14px] cursor-pointer hover:text-brand-primary transition-all duration-200"
                     >
                       <Link to={ele.split(" ").join("-").toLowerCase()}>
                         {ele}
@@ -124,11 +123,11 @@ const Footer = () => {
           </div>
 
           {/* Section 2 */}
-          <div className="lg:w-[50%] flex flex-wrap flex-row justify-between pl-3 lg:pl-5 gap-3">
+          <div className="lg:w-[50%] flex flex-wrap flex-row justify-between pl-3 lg:pl-10 gap-3">
             {FooterLink2.map((ele, i) => {
               return (
                 <div key={i} className="w-[48%] lg:w-[30%] mb-7 lg:pl-0">
-                  <h1 className="text-richblack-50 font-semibold text-[16px]">
+                  <h1 className="text-white font-semibold text-[16px]">
                     {ele.title}
                   </h1>
                   <div className="flex flex-col gap-2 mt-2">
@@ -136,7 +135,7 @@ const Footer = () => {
                       return (
                         <div
                           key={index}
-                          className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
+                          className="text-[14px] cursor-pointer hover:text-white transition-all duration-200"
                         >
                           <Link to={link.link}>{link.title}</Link>
                         </div>
@@ -149,30 +148,16 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
-      <div className="flex flex-row items-center justify-between w-11/12 max-w-maxContent text-richblack-400 mx-auto  pb-14 text-sm">
-        {/* Section 1 */}
-        <div className="flex justify-between lg:items-start items-center flex-col lg:flex-row gap-3 w-full">
-          <div className="flex flex-row">
-            {BottomFooter.map((ele, i) => {
-              return (
-                <div
-                  key={i}
-                  className={` ${
-                    BottomFooter.length - 1 === i
-                      ? ""
-                      : "border-r border-richblack-700 cursor-pointer hover:text-richblack-50 transition-all duration-200"
-                  } px-3 `}
-                >
-                  <Link to={ele.split(" ").join("-").toLocaleLowerCase()}>
-                    {ele}
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="text-center">Made with ❤️ Anish jindal © 2023 Studynotion</div>
+      <div className="w-11/12 max-w-maxContent mx-auto pb-14 flex flex-col lg:flex-row items-center justify-between text-sm text-text-faint">
+        <div className="flex gap-4">
+          {BottomFooter.map((item, index) => (
+             <Link key={index} to={`/${item.split(" ").join("-").toLowerCase()}`} className="hover:text-white transition-colors border-r border-surface-border pr-4 last:border-none">
+              {item}
+            </Link>
+          ))}
+        </div>
+        <div className="mt-4 lg:mt-0">
+          Made with <span className="text-brand-accent">♥</span> © 2026 Tutor Master
         </div>
       </div>
     </div>

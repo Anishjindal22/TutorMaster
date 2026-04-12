@@ -3,6 +3,7 @@ import OtpInput from "react-otp-input";
 import { Link } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
+import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { sendOtp, signUp } from "../services/operations/authAPI";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +15,21 @@ const VerifyEmail = () => {
     const navigate = useNavigate();
     
     useEffect(() => {
-      if(!signupData) navigate('/signup')
-    }, [])
+      if (!signupData) {
+        navigate('/signup')
+      }
+    }, [signupData, navigate])
     
     const handleVerifyAndSignup = (e) => {
         e.preventDefault();
+        if (!signupData) {
+          navigate('/signup')
+          return
+        }
+        if (otp.trim().length !== 6) {
+          toast.error("Please enter a valid 6-digit OTP")
+          return
+        }
         const {
             accountType,
             firstName,
@@ -85,7 +96,7 @@ const VerifyEmail = () => {
             </Link>
             <button
               className="flex items-center text-blue-100 gap-x-2"
-              onClick={() => dispatch(sendOtp(signupData.email))}
+              onClick={() => dispatch(sendOtp(signupData?.email, navigate))}
             >
               <RxCountdownTimer />
               Resend it

@@ -16,9 +16,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
-//database connect
 database.connectDB(); 
-//middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -27,27 +25,18 @@ app.use(
 		credentials: true,
 	})
 )
-// app.use((req, res, next) => {
-// 	res.header('Access-Control-Allow-Origin', '*');
-// 	next();
-//   });
 app.use(
 	fileUpload({
 		useTempFiles:true,
 		tempFileDir:"/tmp",
 	})
 )
-//cloudinary connection
 cloudinaryConnect();
 
-//routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
-
-
-//def                 
 
 app.get("/", (req, res) => {
 	return res.json({

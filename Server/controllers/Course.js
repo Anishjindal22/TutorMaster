@@ -205,11 +205,6 @@ exports.editCourse = async (req, res) => {
     for (const key in updates) {
       if (updates.hasOwnProperty(key)) {
         course[key] = updates[key];
-        // if (key === "tag" || key === "instructions") {
-        //   course[key] = JSON.parse(updates[key])
-        // } else {
-        //   course[key] = updates[key]
-        // }
       }
     }
 
@@ -285,13 +280,6 @@ exports.getFullCourseDetails = async (req, res) => {
         message: `Could not find course with id: ${courseId}`,
       });
     }
-
-    // if (courseDetails.status === "Draft") {
-    //   return res.status(403).json({
-    //     success: false,
-    //     message: `Accessing a draft course is forbidden`,
-    //   });
-    // }
 
     let totalDurationInSeconds = 0;
     courseDetails.courseContent.forEach((content) => {

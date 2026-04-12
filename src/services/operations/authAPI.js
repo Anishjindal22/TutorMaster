@@ -1,5 +1,5 @@
 import {toast} from "react-hot-toast"
-import { setLoading, setToken } from "../../slices/authSlice"
+import { setLoading, setSignupData, setToken } from "../../slices/authSlice"
 import { resetCart } from "../../slices/cartSlice"
 import {setUser}  from "../../slices/profileSlice"
 import { apiConnector } from "../apiconnector"
@@ -34,10 +34,12 @@ export function sendOtp(email, navigate){
       }
 
       toast.success("OTP Sent Successfully")
-      navigate("/verify-email")
+      if (navigate) {
+        navigate("/verify-email")
+      }
      } catch (error) {
       console.log("SENDOTP API ERROR............", error)
-      toast.error("Could Not Send OTP")
+        toast.error(error?.response?.data?.message || "Could Not Send OTP")
      }
      dispatch(setLoading(false));
      toast.dismiss(toastId);
@@ -66,7 +68,7 @@ export function signUp(
         email,
         password,
         confirmPassword,
-        otp
+        otp: otp?.trim(),
       })
 
       console.log("SIGNUP_API RESPONSE............", response)
@@ -78,10 +80,11 @@ export function signUp(
       }
 
       toast.success("Signup successful")
+      dispatch(setSignupData(null))
       navigate("/login")
      } catch (error) {
       console.log("SIGNUP_API ERROR............", error)
-      toast.error("Could Not Sign up user")
+      toast.error(error?.response?.data?.message || "Could Not Sign up user")
      }
      dispatch(setLoading(false));
      toast.dismiss(toastId);

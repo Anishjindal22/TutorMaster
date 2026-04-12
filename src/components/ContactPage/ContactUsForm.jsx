@@ -18,9 +18,7 @@ const ContactUsForm = () => {
         console.log("Logging Data" , data);
         try{
             setLoading(true);
-            // const response = await apiConnector("POST", contactusEndpoint.CONTACT_US_API, data);
-            const response = {status:"OK"};
-            // console.log("Logging response", response);
+            await apiConnector("POST", contactusEndpoint.CONTACT_US_API, data);
             setLoading(false);
         }
         catch(error) {
@@ -176,10 +174,10 @@ const ContactUsForm = () => {
                 }
             </div>
                 
-            <button type='submit'
+                <button type='submit' disabled={loading}
             className='rounded-md bg-yellow-50 px-6 py-3 text-center text-[13px] font-bold text-black shadow-[2px_2px_0px_0px_rgba(255,255,255,0.18)] 
          transition-all duration-200 hover:scale-95 hover:shadow-none  disabled:bg-richblack-500 sm:text-[16px] '>
-                    Send Message
+                    {loading ? "Sending..." : "Send Message"}
             </button>
     </form>
   )

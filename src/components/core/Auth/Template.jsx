@@ -1,48 +1,32 @@
-import { FcGoogle } from "react-icons/fc"
 import { useSelector } from "react-redux"
 
-import frameImg from "../../../assets/Images/frame.png"
 import LoginForm from "./LoginForm"
 import SignupForm from "./SignupForm"
 
-function Template({ title, description1, description2, image, formType }) {
+function Template({ title, description1, description2, formType }) {
   const { loading } = useSelector((state) => state.auth)
 
   return (
-    <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
+    <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mt-20 bg-surface-dark">
+
       {loading ? (
         <div className="spinner"></div>
       ) : (
-        <div className="mx-auto flex w-11/12 max-w-maxContent flex-col-reverse justify-between gap-y-12 py-12 md:flex-row md:gap-y-0 md:gap-x-12">
-          <div className="mx-auto w-11/12 max-w-[450px] md:mx-0">
-            <h1 className="text-[1.875rem] font-semibold leading-[2.375rem] text-richblack-5">
+        <div className="mx-auto flex w-11/12 max-w-maxContent items-center justify-center">
+          
+          <div className="w-full max-w-[520px] p-8 rounded-2xl bg-surface-light border border-surface-border">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               {title}
             </h1>
-            <p className="mt-4 text-[1.125rem] leading-[1.625rem]">
-              <span className="text-richblack-100">{description1}</span>{" "}
-              <span className="font-edu-sa font-bold italic text-blue-100">
+            <p className="mt-4 text-base font-inter">
+              <span className="text-text-muted block">{description1}</span>{" "}
+              <span className="font-display font-medium text-text-main block mt-1">
                 {description2}
               </span>
             </p>
             {formType === "signup" ? <SignupForm /> : <LoginForm />}
           </div>
-          <div className="relative mx-auto w-11/12 max-w-[450px] md:mx-0">
-            <img
-              src={frameImg}
-              alt="Pattern"
-              width={558}
-              height={504}
-              loading="lazy"
-            />
-            <img
-              src={image}
-              alt="Students"
-              width={558}
-              height={504}
-              loading="lazy"
-              className="absolute -top-4 right-4 z-10"
-            />
-          </div>
+          
         </div>
       )}
     </div>

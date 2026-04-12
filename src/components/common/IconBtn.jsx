@@ -11,9 +11,14 @@ export default function IconBtn({
       <button
         disabled={disabled}
         onClick={onclick}
-        className={`flex items-center ${
-          outline ? "border border-yellow-50 bg-transparent" : "bg-yellow-50"
-        } cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-richblack-900 ${customClasses}`}
+        className={`flex items-center justify-center gap-x-2 rounded-xl py-2.5 px-6 font-semibold transition-all duration-300
+          ${
+            outline 
+              ? "border border-brand-secondary bg-transparent text-brand-secondary hover:bg-brand-secondary/10" 
+              : "bg-surface-light border border-surface-border text-white hover:bg-surface-dim"
+          } 
+          ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} 
+          ${customClasses || ""}`}
         type={type}
       >
         {children ? (

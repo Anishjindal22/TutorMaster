@@ -6,11 +6,30 @@ module.exports = {
       inter: ["Inter", "sans-serif"],
       "edu-sa": ["Edu SA Beginner", "cursive"],
       mono: ["Roboto Mono", "monospace"],
+      display: ["Space Grotesk", "sans-serif"], // New unique font
     },
     colors: {
       white: "#fff",
       black: "#000",
       transparent: "#ffffff00",
+      // --- NEW UNIQUE THEME COLORS ---
+      surface: {
+        dark: "#050507",
+        dim: "#0e0e12",
+        light: "#18181f",
+        border: "#262631",
+      },
+      brand: {
+        primary: "#6A35FF", // Electric Indigo
+        secondary: "#00E5FF", // Neon Cyan
+        accent: "#FF2079", // Radical Red
+      },
+      text: {
+        main: "#FAFAFA",
+        muted: "#A1A1AA",
+        faint: "#52525B",
+      },
+      // --- LEGACY COLORS (Kept so other pages don't break while we transition) ---
       richblack: {
         5: "#F1F2FF",
         25: "#DBDDEA",
@@ -131,7 +150,13 @@ module.exports = {
       },
       boxShadow: {
         'custom': '0 1.5px rgba(255, 255, 255, 0.25)',
+        'glow': '0 0 20px rgba(106, 53, 255, 0.5)',
+        'glow-cyan': '0 0 20px rgba(0, 229, 255, 0.5)',
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'hero-pattern': "url('/src/assets/Images/bghome.svg')",
+      }
     },
   },
   plugins: [],

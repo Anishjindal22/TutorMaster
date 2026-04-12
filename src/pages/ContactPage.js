@@ -10,7 +10,7 @@ const ContactPage = () => {
         {
             title:"Chat on us",
             desc:"Our friendly team is here to help.",
-            address:"info@studynotion.com"
+            address:"hello@tutormaster.com"
         },
         {
             title:"Visit us",
@@ -67,3 +67,4 @@ const ContactPage = () => {
 }
 
 export default ContactPage
+

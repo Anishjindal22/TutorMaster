@@ -1,5 +1,5 @@
 import React from 'react'
-import { UseSelector, useSelector } from 'react-redux/es/hooks/useSelector'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { RiEditBoxLine } from "react-icons/ri"
 import { formattedDate } from "../../../utils/dateFormatter"
@@ -9,41 +9,54 @@ const MyProfile = () => {
     const navigate = useNavigate();
     
   return (
-    <>
-    <h1 className="mb-14 text-3xl font-medium text-richblack-5">
+    <div className="animate-fade-in">
+    <h1 className="mb-10 text-4xl font-extrabold text-white tracking-tight">
       My Profile
     </h1>
-    <div className="flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12">
-      <div className="flex items-center gap-x-4">
-        <img
-          src={user?.image}
-          alt={`profile-${user?.firstName}`}
-          className="aspect-square w-[78px] rounded-full object-cover"
-        />
+    
+    {/* Profile Header Card */}
+    <div className="flex items-center justify-between rounded-2xl border border-surface-border bg-surface-dim p-8 sm:px-12 mb-10 transition-all duration-300">
+      <div className="flex items-center gap-x-6">
+        <div className="relative">
+          <img
+            src={user?.image}
+            alt={`profile-${user?.firstName}`}
+            className="aspect-square w-[80px] sm:w-[100px] rounded-full object-cover border-2 border-surface-border"
+          />
+        </div>
         <div className="space-y-1">
-          <p className="text-lg font-semibold text-richblack-5">
+          <p className="text-xl sm:text-2xl font-bold text-white">
             {user?.firstName + " " + user?.lastName}
           </p>
-          <p className="text-sm text-richblack-300">{user?.email}</p>
+          <p className="text-sm font-medium text-text-muted">{user?.email}</p>
         </div>
       </div>
-      <IconBtn
-        text="Edit"
-        onclick={() => {
-          navigate("/dashboard/settings")
-        }}
-      >
-        <RiEditBoxLine />
-      </IconBtn>
+      <div>
+        <IconBtn
+          text="Edit Profile"
+          onclick={() => {
+            navigate("/dashboard/settings")
+          }}
+          customClasses="hidden sm:flex bg-surface-light border border-surface-border"
+        >
+          <RiEditBoxLine className="text-lg" />
+        </IconBtn>
+      </div>
     </div>
-    <div className="my-10 flex flex-col gap-y-10 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12">
+
+    {/* About Card */}
+    <div className="flex flex-col gap-y-6 rounded-2xl border border-surface-border bg-surface-dim p-8 sm:px-12 mb-10">
       <div className="flex w-full items-center justify-between">
-        <p className="text-lg font-semibold text-richblack-5">About</p>
+        <p className="text-xl font-bold text-white flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-text-main"></span>
+          Biography
+        </p>
         <IconBtn
           text="Edit"
           onclick={() => {
             navigate("/dashboard/settings")
           }}
+          customClasses="bg-surface-light border border-surface-border"
         >
           <RiEditBoxLine />
         </IconBtn>
@@ -51,72 +64,80 @@ const MyProfile = () => {
       <p
         className={`${
           user?.additionalDetails?.about
-            ? "text-richblack-5"
-            : "text-richblack-400"
-        } text-sm font-medium`}
+            ? "text-text-main"
+            : "text-text-muted italic"
+        } text-base font-light leading-relaxed max-w-3xl`}
       >
-        {user?.additionalDetails?.about ?? "Write Something About Yourself"}
+        {user?.additionalDetails?.about ?? "No biography set. Write something about your journey."}
       </p>
     </div>
-    <div className="my-10 flex flex-col gap-y-10 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12">
-      <div className="flex w-full items-center justify-between">
-        <p className="text-lg font-semibold text-richblack-5">
-          Personal Details
+
+    {/* Personal Details Card */}
+    <div className="flex flex-col gap-y-8 rounded-2xl border border-surface-border bg-surface-dim p-8 sm:px-12 mb-10">
+      <div className="flex w-full items-center justify-between border-b border-surface-border pb-6">
+        <p className="text-xl font-bold text-white flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-text-main"></span>
+          Personal Intel
         </p>
         <IconBtn
           text="Edit"
           onclick={() => {
             navigate("/dashboard/settings")
           }}
+          customClasses="bg-surface-light border border-surface-border"
         >
           <RiEditBoxLine />
         </IconBtn>
       </div>
-      <div className="flex max-w-[500px] justify-between">
-        <div className="flex flex-col gap-y-5">
-          <div>
-            <p className="mb-2 text-sm text-richblack-600">First Name</p>
-            <p className="text-sm font-medium text-richblack-5">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8 max-w-[800px]">
+        {/* Left Column */}
+        <div className="flex flex-col gap-y-8">
+          <div className="group/item">
+            <p className="mb-1 text-xs uppercase tracking-wider font-semibold text-text-muted group-hover/item:text-brand-secondary transition-colors">First Name</p>
+            <p className="text-base font-medium text-white">
               {user?.firstName}
             </p>
           </div>
-          <div>
-            <p className="mb-2 text-sm text-richblack-600">Email</p>
-            <p className="text-sm font-medium text-richblack-5">
+          <div className="group/item">
+            <p className="mb-1 text-xs uppercase tracking-wider font-semibold text-text-muted group-hover/item:text-brand-secondary transition-colors">Email Address</p>
+            <p className="text-base font-medium text-white break-all">
               {user?.email}
             </p>
           </div>
-          <div>
-            <p className="mb-2 text-sm text-richblack-600">Gender</p>
-            <p className="text-sm font-medium text-richblack-5">
-              {user?.additionalDetails?.gender ?? "Add Gender"}
+          <div className="group/item">
+            <p className="mb-1 text-xs uppercase tracking-wider font-semibold text-text-muted group-hover/item:text-brand-secondary transition-colors">Gender</p>
+            <p className="text-base font-medium text-white">
+              {user?.additionalDetails?.gender ?? "Unspecified"}
             </p>
           </div>
         </div>
-        <div className="flex flex-col gap-y-5">
-          <div>
-            <p className="mb-2 text-sm text-richblack-600">Last Name</p>
-            <p className="text-sm font-medium text-richblack-5">
+
+        {/* Right Column */}
+        <div className="flex flex-col gap-y-8">
+          <div className="group/item">
+            <p className="mb-1 text-xs uppercase tracking-wider font-semibold text-text-muted group-hover/item:text-brand-primary transition-colors">Last Name</p>
+            <p className="text-base font-medium text-white">
               {user?.lastName}
             </p>
           </div>
-          <div>
-            <p className="mb-2 text-sm text-richblack-600">Phone Number</p>
-            <p className="text-sm font-medium text-richblack-5">
-              {user?.additionalDetails?.contactNumber ?? "Add Contact Number"}
+          <div className="group/item">
+            <p className="mb-1 text-xs uppercase tracking-wider font-semibold text-text-muted group-hover/item:text-brand-primary transition-colors">Phone Number</p>
+            <p className="text-base font-medium text-white">
+              {user?.additionalDetails?.contactNumber ?? "Unspecified"}
             </p>
           </div>
-          <div>
-            <p className="mb-2 text-sm text-richblack-600">Date Of Birth</p>
-            <p className="text-sm font-medium text-richblack-5">
+          <div className="group/item">
+            <p className="mb-1 text-xs uppercase tracking-wider font-semibold text-text-muted group-hover/item:text-brand-primary transition-colors">Date Of Birth</p>
+            <p className="text-base font-medium text-white">
               {formattedDate(user?.additionalDetails?.dateOfBirth) ??
-                "Add Date Of Birth"}
+                "Unspecified"}
             </p>
           </div>
         </div>
       </div>
     </div>
-  </>
+  </div>
   )
 }
 

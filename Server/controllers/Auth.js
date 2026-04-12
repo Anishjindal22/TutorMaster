@@ -10,8 +10,13 @@ require("dotenv").config();
 
 exports.sendOtp = async (req, res) => {
   try {
-    const { email } = req.body;
-    console.log("Email in senOtp controller", email);
+    const email = req.body?.email?.trim()?.toLowerCase();
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -35,9 +40,8 @@ exports.sendOtp = async (req, res) => {
         lowerCaseAlphabets: false,
         specialChars: false,
       });
-      result = OTP.findOne({ otp: otp });
+      result = await OTP.findOne({ otp: otp });
     }
-    console.log("OTP generated", otp);
 
     const createdOtp = await OTP.create({
       email,
@@ -70,14 +74,16 @@ exports.signUp = async (req, res) => {
       otp,
       contactNumber,
     } = req.body;
+    const normalizedEmail = email?.trim()?.toLowerCase();
+    const normalizedOtp = String(otp || "").trim();
 
     if (
       !firstName ||
       !lastName ||
-      !email ||
+      !normalizedEmail ||
       !password ||
       !confirmPassword ||
-      !otp
+      !normalizedOtp
     ) {
       return res.status(403).json({
         success: false,
@@ -92,7 +98,7 @@ exports.signUp = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(401).json({
@@ -101,16 +107,15 @@ exports.signUp = async (req, res) => {
       });
     }
 
-    const recentOtp = await OTP.find({ email })
+    const recentOtp = await OTP.find({ email: normalizedEmail })
       .sort({ createdAt: -1 })
       .limit(1);
-    console.log("Otp in signup page is:", recentOtp[0].otp);
     if (recentOtp.length == 0) {
       return res.status(400).json({
         success: false,
         message: "OTP Not Found",
       });
-    } else if (otp !== recentOtp[0].otp) {
+    } else if (normalizedOtp !== String(recentOtp[0].otp).trim()) {
       return res.status(400).json({
         success: false,
         message: "Invalid OTP",
@@ -119,28 +124,25 @@ exports.signUp = async (req, res) => {
 
     const hashedPwd = await bcrypt.hash(password, 10);
 
-    let approved = "";
-    approved === "Instructor" ? (approved = false) : (approved = true);
+    const approved = accountType === "Instructor" ? false : true;
 
     const profileDetails = await Profile.create({
       gender: null,
       dateOfBirth: null,
       about: null,
-      contactNumer: null,
+      contactNumber: contactNumber || null,
     });
 
-    console.log("Data received in signup is", firstName);
     const newUser = await User.create({
       firstName,
       lastName,
-      email,
+      email: normalizedEmail,
       password: hashedPwd,
       accountType,
       approved: approved,
       additionalDetails: profileDetails._id,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
-    console.log("Data created successfully");
     return res.status(200).json({
       success: true,
       message: "User is registered Successfully",
@@ -238,14 +240,7 @@ exports.changePassword = async (req, res) => {
         .json({ success: false, message: "The password is incorrect" });
     }
 
-    // Match new password and confirm new password
-    // if (newPassword !== confirmNewPassword) {
-    // 	// If new password and confirm new password do not match, return a 400 (Bad Request) error
-    // 	return res.status(400).json({
-    // 		success: false,
-    // 		message: "The password and confirm password does not match",
-    // 	});
-    // }
+    // New password is already validated in the request body.
 
     const encryptedPassword = await bcrypt.hash(newPassword, 10);
     const updatedUserDetails = await User.findByIdAndUpdate(

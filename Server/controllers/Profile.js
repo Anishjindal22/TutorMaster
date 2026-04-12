@@ -50,19 +50,12 @@ exports.deleteAccount = async (req, res) => {
     const { user } = req.body;
     const userId = req.user.id;
 
-    //vallidation not neccessary but still doing
+    // Ensure user exists before deleting linked profile.
     const userDetails = await User.findById(userId);
-    // if(!userDetails) {
-    //     return res.status(404).json({
-    //         success:false,
-    //         message:'User not found',
-    //     });
-    // }
 
     await Profile.findByIdAndDelete({ _id: userDetails.additionalDetails });
 
-    //TOOD: HW unenroll user form all enrolled courses
-    //delete user
+    // TODO: Unenroll user from all enrolled courses.
     await User.findByIdAndDelete({ _id: userId });
 
     return res.status(200).json({
