@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import { getFullDetailsOfCourse } from '../services/operations/courseDetailsAPI';
 import { setCompletedLectures, setCourseSectionData, setEntireCourseData, setTotalNoOfLectures } from '../slices/viewCourseSlice';
 import VideoDetailsSidebar from '../components/core/ViewCourse/VideoDetailsSidebar';
@@ -11,8 +11,6 @@ const ViewCourse = () => {
     const {courseId} = useParams();
     const {token} = useSelector((state)=> state.auth);
     const dispatch = useDispatch();
-    const location = useLocation()
-    const {courseSectionData, courseEntireData, completedLectures} = useSelector((state)=>state.viewCourse);
 
     // useEffect(() => {
     //     dispatch(setCourseSectionData([]));
@@ -42,7 +40,7 @@ const ViewCourse = () => {
     }
     
     setCourseSpecificDetails()
-    },[courseId])
+    },[courseId, dispatch, token])
     
   return (
     <>

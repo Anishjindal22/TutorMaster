@@ -20,11 +20,11 @@ const RequirementField = ({
       }
       register(name, {required:true, validate: (value)=> value.length > 0 })
       
-    }, [])
+    }, [course?.instructions, editCourse, name, register])
 
     useEffect(() => {
         setValue(name, requirementsList)
-    }, [requirementsList])
+    }, [name, requirementsList, setValue])
     
     const handleAddRequirement = () => {
         if(requirement){

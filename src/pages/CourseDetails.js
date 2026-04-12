@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { buyCourse } from '../services/operations/studentFeaturesAPI.js';
 import { fetchCourseDetails } from '../services/operations/courseDetailsAPI';
-import { setCourse } from '../slices/courseSlice';
 import GetAvgRating from '../utils/avgRating';
 import Error from "./Error"
 import ConfirmationModal from "../components/common/ConfirmationModal"
@@ -20,7 +19,6 @@ const CourseDetails = () => {
     const {token} = useSelector((state)=> state.auth)
     const {user} = useSelector((state) => state.profile )
     const {loading} = useSelector((state) => state.profile);
-    const { cart } = useSelector((state) => state.cart)
     const {courseId} = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -62,7 +60,7 @@ const CourseDetails = () => {
     const [isActive, setIsActive] = useState([]);
     const handleActive = (id)=> {
         setIsActive(
-            !isActive.includes(id) ? isActive.concat(id) : isActive.filter((e)=> e != id)
+            !isActive.includes(id) ? isActive.concat(id) : isActive.filter((e)=> e !== id)
         )
     }
 
@@ -98,10 +96,8 @@ const CourseDetails = () => {
     }
 
     const {
-        _id: course_id,
         courseName,
         description,
-        thumbnail,
         price, 
         whatWillYouLearn,
         courseContent,

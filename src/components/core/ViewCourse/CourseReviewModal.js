@@ -13,7 +13,6 @@ const CourseReviewModal = ({setReviewModal}) => {
     const {
         register, 
         setValue,
-        getValues,
         handleSubmit,
         formState:{errors}
     } = useForm()
@@ -21,7 +20,7 @@ const CourseReviewModal = ({setReviewModal}) => {
     useEffect(()=>{
         setValue("courseRating",0);
         setValue("courseExperience","")
-    },[])
+    },[setValue])
 
     const ratingChanged = (newRating) => {
         setValue("courseRating", newRating)

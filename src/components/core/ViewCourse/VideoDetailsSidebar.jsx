@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import IconBtn from '../../common/IconBtn';
-import { setCompletedLectures, setCourseSectionData, setEntireCourseData, setTotalNoOfLectures } from '../../../slices/viewCourseSlice';
+import { setCompletedLectures, setCourseSectionData, setEntireCourseData } from '../../../slices/viewCourseSlice';
 import { BsChevronDown } from "react-icons/bs"
 import { IoIosArrowBack } from "react-icons/io"
 
@@ -41,7 +41,7 @@ const VideoDetailsSidebar = ({setReviewModal}) => {
       setActiveFlags();
 
       
-    }, [courseSectionData, courseEntireData, location.pathname])
+        }, [courseSectionData, courseEntireData, location.pathname, sectionId, subSectionId])
     
     useEffect(() => {
       
@@ -53,7 +53,7 @@ const VideoDetailsSidebar = ({setReviewModal}) => {
             
             dispatch(setCompletedLectures(0))
           }
-    },[])
+        },[dispatch])
     
     const handleAddReview = () => {
         // console.log("I am inside Add handleAddReview")

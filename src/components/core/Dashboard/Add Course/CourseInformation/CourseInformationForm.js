@@ -60,7 +60,7 @@ const CourseInformationForm = () => {
       }
       getCategories()
       
-    }, [])
+    }, [course?.category, course?.courseName, course?.description, course?.instructions, course?.price, course?.tags, course?.thumbnail, course?.whatWillYouLearn, editCourse, setValue])
     
     const isFormUpdated = () => {
         const currentValues = getValues();

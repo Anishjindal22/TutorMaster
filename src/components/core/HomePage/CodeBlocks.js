@@ -1,11 +1,10 @@
 import React from 'react'
 import CTAButton from "../HomePage/Button"
-import HighlightText from './HighlightText'
 import {FaArrowRight} from "react-icons/fa"
 import { TypeAnimation } from 'react-type-animation'
 import "./Border.css";
 const CodeBlocks = ({
-    position, heading, subheading, ctabtn1, ctabtn2, codeblock, backgroudGradient, codeColor
+    position, heading, subheading, ctabtn1, ctabtn2, codeblock, codeColor
 }) => {
   return (
     <div className={`flex ${position} my-20 justify-between flex-col gap-10`}>

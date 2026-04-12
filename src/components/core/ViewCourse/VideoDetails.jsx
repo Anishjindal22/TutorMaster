@@ -7,7 +7,6 @@ import { BigPlayButton, Player } from "video-react"
 
 import 'video-react/dist/video-react.css';
 
-import {AiFillPlayCircle} from "react-icons/ai"
 import IconBtn from '../../common/IconBtn';
 
 const VideoDetails = () => {
@@ -49,7 +48,7 @@ const VideoDetails = () => {
         }
     }
     setVideoSpecificDetails();
-  }, [courseSectionData, courseEntireData, location.pathname])
+    }, [courseSectionData, courseEntireData, courseId, location.pathname, navigate, sectionId, subSectionId])
   
   const isFirstVideo = () => {
     const currentSectionIndex = courseSectionData.findIndex(
@@ -121,15 +120,13 @@ const VideoDetails = () => {
         (data) => data._id === sectionId
     )
 
-    const noOfSubSections = courseSectionData[currentSectionIndex].subSection.length;
-
     const currentSubSectionIndex = courseSectionData[currentSectionIndex].subSection.findIndex(
         (data) => data._id === subSectionId
     )
 
-    if(currentSubSectionIndex != 0 ) {
+    if(currentSubSectionIndex !== 0 ) {
         //same section , prev video
-        const prevSubSectionId = courseSectionData[currentSectionIndex].subSection[currentSubSectionIndex - 1];
+        const prevSubSectionId = courseSectionData[currentSectionIndex].subSection[currentSubSectionIndex - 1]._id;
         //iss video par chalge jao
         navigate(`/view-course/${courseId}/section/${sectionId}/sub-section/${prevSubSectionId}`)
     }

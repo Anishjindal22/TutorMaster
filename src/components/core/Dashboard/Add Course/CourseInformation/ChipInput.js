@@ -20,11 +20,11 @@ const ChipInput = ({
       }
       register(name, {required:true, validate: (value)=> value.length > 0})
 
-    }, [])
+    }, [course?.tags, editCourse, name, register])
     
     useEffect(() => {
       setValue(name, chips)
-    }, [chips])
+    }, [chips, name, setValue])
     
     const handleKeyDown = (e) => {
         if (e.key === "Enter" || e.key === ",") {

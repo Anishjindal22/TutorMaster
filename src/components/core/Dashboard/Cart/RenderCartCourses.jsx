@@ -1,20 +1,13 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {GiNinjaStar} from "react-icons/gi"
 import {RiDeleteBin6Line} from "react-icons/ri"
 import { removeFromCart } from '../../../../slices/cartSlice'
 import ReactStars from "react-rating-stars-component";
-import GetAvgRating from '../../../../utils/avgRating';
 import { FaStar } from "react-icons/fa"
 const RenderCartCourses = () => {
 
     const {cart} = useSelector((state) => state.cart);
     const dispatch = useDispatch();
-
-    const getRating = (course) => {
-        const count = GetAvgRating(course?.courseDetails.ratingAndReviews);
-        return count;
-      }
 
   return (
     <div className="flex flex-1 flex-col">
@@ -39,7 +32,6 @@ const RenderCartCourses = () => {
                 {course?.category?.name}
               </p>
               <div className="flex items-center gap-2">
-              {/* {getRating(course)} */}
                 <span className="text-yellow-5">4.5</span>
                 <ReactStars
                   count={5}
