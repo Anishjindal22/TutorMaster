@@ -1,7 +1,10 @@
 {
-    "version": 2,
-    "builds": [{"src": "./index.js", "use":  
-    "@vercel/node" }], 
-    "routes": [{ "src": "/(.*)", "dest": "/" }]
-    
+  "version": 2,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://tutor-master-five.vercel.app/",
+      "permanent": true
     }
+  ]
+}
