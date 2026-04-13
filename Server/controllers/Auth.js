@@ -222,28 +222,21 @@ exports.login = async (req, res) => {
   }
 };
 
-// Controller for Changing Password
 exports.changePassword = async (req, res) => {
   try {
-    // Get user data from req.user
     const userDetails = await User.findById(req.user.id);
 
-    // Get old password, new password, and confirm new password from req.body
     const { oldPassword, newPassword } = req.body;
 
-    // Validate old password
     const isPasswordMatch = await bcrypt.compare(
       oldPassword,
       userDetails.password
     );
     if (!isPasswordMatch) {
-      // If old password does not match, return a 401 (Unauthorized) error
       return res
         .status(401)
         .json({ success: false, message: "The password is incorrect" });
     }
-
-    // New password is already validated in the request body.
 
     const encryptedPassword = await bcrypt.hash(newPassword, 10);
     const updatedUserDetails = await User.findByIdAndUpdate(
@@ -261,7 +254,6 @@ exports.changePassword = async (req, res) => {
       );
       console.log("Email sent successfully:", emailResponse.response);
     } catch (error) {
-      // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
       console.error("Error occurred while sending email:", error);
       return res.status(500).json({
         success: false,

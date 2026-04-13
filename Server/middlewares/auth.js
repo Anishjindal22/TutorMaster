@@ -1,25 +1,48 @@
 const jwt = require("jsonwebtoken")
 
+function extractTokenFromHeader(authorizationHeader) {
+    if (!authorizationHeader || typeof authorizationHeader !== "string") {
+        return null;
+    }
+
+    const [scheme, rawToken] = authorizationHeader.trim().split(/\s+/);
+    if (!rawToken || scheme.toLowerCase() !== "bearer") {
+        return null;
+    }
+
+    return rawToken.replace(/^"|"$/g, "").trim();
+}
 
 exports.auth = async (req,res, next) => {
 
     try {
-        
-        const token = req.body.token || req.cookies.token || req.get("Authorization")?.replace("Bearer ", "");
+        const tokenFromBody = req.body?.token;
+        const tokenFromCookie = req.cookies?.token;
+        const tokenFromHeader = extractTokenFromHeader(req.get("Authorization"));
+
+        const token = (tokenFromBody || tokenFromCookie || tokenFromHeader || "")
+            .toString()
+            .replace(/^"|"$/g, "")
+            .trim();
         
         if(!token) {
             return res.status(401).json({
                 success:false,
-                message:'TOken is missing',
+                message:'Token is missing',
             });
         }
         try {
             const payload = jwt.verify(token,process.env.JWT_SECRET);
             req.user = payload;
         } catch (error) {
+            const message =
+                error?.name === "TokenExpiredError"
+                    ? "Token expired. Please login again."
+                    : "Invalid token.";
+
             return res.status(401).json({
                 success:false,
-                message:"Invaild token."
+                message,
             })
         } 
         next();

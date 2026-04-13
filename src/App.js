@@ -28,6 +28,7 @@ import ViewCourse from "./pages/ViewCourse";
 import VideoDetails from "./components/core/ViewCourse/VideoDetails";
 import Instructor from "./components/core/Dashboard/Instructor"
 import UpdatePassword from "./components/core/Dashboard/Settings/UpdatePassword";
+import CodePractice from "./components/core/Dashboard/CodePractice";
 
 function App() {
   const { user } = useSelector((state) => state.profile)
@@ -102,6 +103,7 @@ function App() {
                 <>
                 <Route path="dashboard/cart" element={<Cart />} />
                 <Route path="dashboard/enrolled-courses" element={<EnrolledCourses />} />
+                <Route path="dashboard/code-practice" element={<CodePractice />} />
                 </>
               )
             }

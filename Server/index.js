@@ -5,6 +5,7 @@ const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
 const paymentRoutes = require("./routes/Payments");
 const courseRoutes = require("./routes/Course");
+const codeExecutionRoutes = require("./routes/CodeExecution");
 
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
@@ -60,12 +61,7 @@ app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
-
-// Backward compatible routes for older frontend builds.
-app.use("/auth", userRoutes);
-app.use("/profile", profileRoutes);
-app.use("/course", courseRoutes);
-app.use("/payment", paymentRoutes);
+app.use("/api/v1/code", codeExecutionRoutes);
 
 app.get("/", (req, res) => {
 	return res.json({
@@ -74,7 +70,25 @@ app.get("/", (req, res) => {
 	});
 });
 
-app.listen(PORT, () => {
-	console.log(`App is running at ${PORT}`)
-});
+const basePort = Number(PORT) || 4000;
+
+function startServer(portToUse) {
+	const server = app
+		.listen(portToUse, () => {
+			console.log(`App is running at ${portToUse}`);
+		})
+		.on("error", (error) => {
+			if (error.code === "EADDRINUSE") {
+				console.error(`Port ${portToUse} is already in use. Retrying on ${portToUse + 1}...`);
+				startServer(portToUse + 1);
+				return;
+			}
+
+			throw error;
+		});
+
+	return server;
+}
+
+startServer(basePort);
 

@@ -1,13 +1,16 @@
+const API_VERSION = "/api/v1";
+
 let resolvedBaseUrl =
   process.env.REACT_APP_BASE_URL ||
-  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? "http://localhost:4000/api/v1"
-    : `${window.location.origin}/api/v1`);
+  (window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+    ? "http://localhost:4000"
+    : window.location.origin);
 
-if (resolvedBaseUrl.indexOf("/api/v1") === -1) {
-  resolvedBaseUrl += "/api/v1";
-}
-const BASE_URL = resolvedBaseUrl.replace(/\/$/, "");
+resolvedBaseUrl = resolvedBaseUrl.replace(/\/$/, "");
+const BASE_URL = resolvedBaseUrl.endsWith(API_VERSION)
+  ? resolvedBaseUrl
+  : `${resolvedBaseUrl}${API_VERSION}`;
 
 // AUTH ENDPOINTS
 export const endpoints = {
@@ -78,4 +81,9 @@ export const settingsEndpoints = {
   UPDATE_PROFILE_API: BASE_URL + "/profile/updateProfile",
   CHANGE_PASSWORD_API: BASE_URL + "/auth/changepassword",
   DELETE_PROFILE_API: BASE_URL + "/profile/deleteProfile",
+}
+
+export const codeEndpoints = {
+  EXECUTE_CODE_API: BASE_URL + "/code/execute",
+  GENERATE_CODE_API: BASE_URL + "/code/generate",
 }

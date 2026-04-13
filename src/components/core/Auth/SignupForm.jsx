@@ -75,8 +75,6 @@ function SignupForm() {
 
   return (
     <div className="mt-8">
-      {/* Wrapper for the Tab to ensure it fits the design system. 
-          Assuming Tab is using base styling, we wrap it with spacing. */}
       <div className="mb-6">
         <Tab tabData={tabData} field={accountType} setField={setAccountType} />
       </div>

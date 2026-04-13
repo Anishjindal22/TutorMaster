@@ -21,8 +21,7 @@ export function sendOtp(email, navigate){
 
      try {
       const response = await apiConnector("POST", SENDOTP_API, {
-        email,
-        checkUserPresent: true,
+        email: email?.trim()?.toLowerCase(),
       })
 
       console.log("SENDOTP API RESPONSE............", response)
@@ -65,7 +64,7 @@ export function signUp(
         accountType,
         firstName,
         lastName,
-        email,
+        email: email?.trim()?.toLowerCase(),
         password,
         confirmPassword,
         otp: otp?.trim(),
@@ -98,7 +97,7 @@ export function login(email, password, navigate){
 
      try {
       const response = await apiConnector("POST", LOGIN_API, {
-        email,
+        email: email?.trim()?.toLowerCase(),
         password,
       })
 
@@ -121,7 +120,7 @@ export function login(email, password, navigate){
       navigate("/dashboard/my-profile")
      } catch (error) {
       console.log("LOGIN API ERROR............", error)
-      toast.error("Could Not LOGIN")
+      toast.error(error?.response?.data?.message || "Could Not LOGIN")
      }
      dispatch(setLoading(false));
      toast.dismiss(toastId);
