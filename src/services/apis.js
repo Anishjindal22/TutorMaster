@@ -1,4 +1,13 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:4000/api/v1";
+let resolvedBaseUrl =
+  process.env.REACT_APP_BASE_URL ||
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:4000/api/v1"
+    : `${window.location.origin}/api/v1`);
+
+if (resolvedBaseUrl.indexOf("/api/v1") === -1) {
+  resolvedBaseUrl += "/api/v1";
+}
+const BASE_URL = resolvedBaseUrl.replace(/\/$/, "");
 
 // AUTH ENDPOINTS
 export const endpoints = {

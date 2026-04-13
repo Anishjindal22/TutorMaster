@@ -3,9 +3,15 @@ require("dotenv").config();
 
 const mailSender = async (email, title, body) =>{
     try {
+        const mailPort = Number(process.env.MAIL_PORT || 587);
+        const isSecure =
+          process.env.MAIL_SECURE === "true" ||
+          mailPort === 465;
+
         let transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
-            secure:true,
+            port: mailPort,
+            secure:isSecure,
             auth: {
               user: process.env.MAIL_USER,
               pass: process.env.MAIL_PASS,
@@ -23,6 +29,7 @@ const mailSender = async (email, title, body) =>{
         
     } catch (error) {
         console.log("Error in mailSender", error.message);
+    throw error;
     }
 }
 

@@ -160,15 +160,16 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email?.trim()?.toLowerCase();
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({
         success: false,
         message: "Email or Password empty",
       });
     }
 
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({ email: normalizedEmail })
       .populate("additionalDetails")
       .exec();
     if (!existingUser) {
@@ -180,7 +181,7 @@ exports.login = async (req, res) => {
 
     if (await bcrypt.compare(password, existingUser.password)) {
       const payload = {
-        email: email,
+        email: normalizedEmail,
         accountType: existingUser.accountType,
         id: existingUser._id,
       };
@@ -196,6 +197,8 @@ exports.login = async (req, res) => {
       const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       };
 
       return res.cookie("token", token, options).status(200).json({
