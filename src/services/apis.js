@@ -56,6 +56,16 @@ export const courseEndpoints = {
   CREATE_RATING_API: BASE_URL + "/course/createRating",
 }
 
+export const notificationEndpoints = {
+  SEND_COURSE_NOTIFICATION_API: BASE_URL + "/notification/send-course",
+  SEND_BROADCAST_NOTIFICATION_API: BASE_URL + "/notification/send-broadcast",
+  SEND_TARGETED_NOTIFICATION_API: BASE_URL + "/notification/send-targeted",
+  GET_MY_NOTIFICATIONS_API: BASE_URL + "/notification/my-notifications",
+  MARK_NOTIFICATION_READ_API: BASE_URL + "/notification/mark-read",
+  MARK_ALL_NOTIFICATIONS_READ_API: BASE_URL + "/notification/mark-all-read",
+  GET_UNREAD_COUNT_API: BASE_URL + "/notification/unread-count",
+}
+
 // RATINGS AND REVIEWS
 export const ratingsEndpoints = {
   REVIEWS_DETAILS_API: BASE_URL + "/course/getReviews",

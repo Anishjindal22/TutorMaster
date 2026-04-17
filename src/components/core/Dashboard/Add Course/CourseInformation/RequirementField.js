@@ -15,7 +15,6 @@ const RequirementField = ({
 
     useEffect(() => { 
       if(editCourse){
-        // console.log("In requirements field, 1st render, editCourse=true course is",course)
         setRequirementsList(JSON.parse(course?.instructions));
       }
       register(name, {required:true, validate: (value)=> value.length > 0 })
@@ -41,7 +40,7 @@ const RequirementField = ({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label className="text-sm text-richblack-5" htmlFor={name}>
+      <label className="add-course-label" htmlFor={name}>
         {label} <sup className="text-pink-200">*</sup>
       </label>
       <div className="flex flex-col items-start space-y-2">
@@ -50,12 +49,12 @@ const RequirementField = ({
           id={name}
           value={requirement}
           onChange={(e) => setRequirement(e.target.value)}
-          className="form-style w-full"
+          className="add-course-input w-full"
         />
         <button
           type="button"
           onClick={handleAddRequirement}
-          className="font-semibold text-yellow-50"
+          className="rounded-lg border border-[#a06e50] px-3 py-1.5 text-sm font-semibold text-[#ffbc87] transition hover:bg-[#2f1f19]"
         >
           Add
         </button>
@@ -63,13 +62,13 @@ const RequirementField = ({
       
       
       {requirementsList.length > 0 && (
-        <ul className="mt-2 list-inside list-disc">
+        <ul className="mt-2 list-inside list-disc rounded-xl border border-[#5c3a2d] bg-[#201713] p-4">
           {requirementsList.map((requirement, index) => (
-            <li key={index} className="flex items-center text-richblack-5">
+            <li key={index} className="flex items-center text-[#f5dfcc]">
               <span>{requirement}</span>
               <button
                 type="button"
-                className="ml-2 text-xs text-pure-greys-300 "
+                className="ml-2 text-xs uppercase tracking-wide text-[#d8b39c]"
                 onClick={() => handleRemoveRequirement(index)}
               >
                 clear

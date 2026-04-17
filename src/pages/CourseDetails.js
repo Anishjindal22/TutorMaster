@@ -31,7 +31,6 @@ const CourseDetails = () => {
       const getCourseFullDetails = async() => {
         try {
             const result = await fetchCourseDetails(courseId);
-            // console.log("Printing CourseData-> " , result);
                 setCourseData(result);
         } catch (error) {
             toast.error("Could not get course")

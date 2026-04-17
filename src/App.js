@@ -29,6 +29,8 @@ import VideoDetails from "./components/core/ViewCourse/VideoDetails";
 import Instructor from "./components/core/Dashboard/Instructor"
 import UpdatePassword from "./components/core/Dashboard/Settings/UpdatePassword";
 import CodePractice from "./components/core/Dashboard/CodePractice";
+import Notifications from "./components/core/Dashboard/Notifications";
+import SendNotification from "./components/core/Dashboard/SendNotification";
 
 function App() {
   const { user } = useSelector((state) => state.profile)
@@ -95,7 +97,8 @@ function App() {
             }
           >
             <Route path="dashboard/my-profile" element={<MyProfile />} />
-            <Route path="dashboard/Settings" element={<Settings />} />
+            <Route path="dashboard/settings" element={<Settings />} />
+            <Route path="dashboard/notifications" element={<Notifications />} />
             
 
             {
@@ -103,21 +106,32 @@ function App() {
                 <>
                 <Route path="dashboard/cart" element={<Cart />} />
                 <Route path="dashboard/enrolled-courses" element={<EnrolledCourses />} />
-                <Route path="dashboard/code-practice" element={<CodePractice />} />
                 </>
               )
             }
 
             {
-              user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
-                <>
+              (user?.accountType === ACCOUNT_TYPE.STUDENT || user?.accountType === ACCOUNT_TYPE.INSTRUCTOR || user?.accountType === ACCOUNT_TYPE.ADMIN) && (
+                <Route path="dashboard/code-practice" element={<CodePractice />} />
+              )
+            }
+
+            {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+              <>
                 <Route path="dashboard/instructor" element={<Instructor />} />
                 <Route path="dashboard/add-course" element={<AddCourse />} />
                 <Route path="dashboard/my-courses" element={<MyCourses />} />
                 <Route path="dashboard/edit-course/:courseId" element={<EditCourse />} />
-                </>
-              )
-            }
+              </>
+            )}
+
+            {(user?.accountType === ACCOUNT_TYPE.INSTRUCTOR ||
+              user?.accountType === ACCOUNT_TYPE.ADMIN) && (
+              <Route
+                path="dashboard/send-notification"
+                element={<SendNotification />}
+              />
+            )}
 
           </Route>
 

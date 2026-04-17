@@ -29,7 +29,6 @@ const CoursesTable = ({courses, setCourses}) => {
         setLoading(true);
         await deleteCourse({courseId:courseId}, token)
         const result = await fetchInstructorCourses(token)
-        // console.log("Incourse table result is", result)
         if (result) {
             setCourses(result)
         }
@@ -74,7 +73,6 @@ const CoursesTable = ({courses, setCourses}) => {
             <Tr>
               <Td className="py-10 text-center text-2xl font-medium text-richblack-100">
                 No courses found
-                {/* TODO: Need to change this state */}
               </Td>
             </Tr>
           ) : (

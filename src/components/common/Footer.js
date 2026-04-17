@@ -3,7 +3,7 @@ import { FooterLink2 } from "../../data/footer-links";
 import { Link } from "react-router-dom";
 
 // Icons
-import { FaFacebook, FaGoogle, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
 
 const BottomFooter = ["Privacy Policy", "Cookie Policy", "Terms"];
 const Resources = [
@@ -50,7 +50,6 @@ const Footer = () => {
                 <FaFacebook className="hover:text-[#1877F2] transition-colors cursor-pointer" />
                 <FaGoogle className="hover:text-[#EA4335] transition-colors cursor-pointer" />
                 <FaTwitter className="hover:text-[#1DA1F2] transition-colors cursor-pointer" />
-                <FaYoutube className="hover:text-[#FF0000] transition-colors cursor-pointer" />
               </div>
             </div>
 

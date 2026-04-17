@@ -2,7 +2,21 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 
 exports.connectDB = () => {
-    mongoose.connect(process.env.MONGODB_URL, {
+    const mongoUrl = process.env.MONGODB_URL
+
+    if (!mongoUrl) {
+        console.error("DB Connection Failed")
+        console.error("MONGODB_URL is missing in environment configuration")
+        process.exit(1)
+    }
+
+    if (!mongoUrl.startsWith("mongodb://") && !mongoUrl.startsWith("mongodb+srv://")) {
+        console.error("DB Connection Failed")
+        console.error("MONGODB_URL must start with mongodb:// or mongodb+srv://")
+        process.exit(1)
+    }
+
+    mongoose.connect(mongoUrl, {
         useUnifiedTopology:true,
         useNewUrlParser: true
     })

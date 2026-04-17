@@ -6,15 +6,36 @@ const profileRoutes = require("./routes/Profile");
 const paymentRoutes = require("./routes/Payments");
 const courseRoutes = require("./routes/Course");
 const codeExecutionRoutes = require("./routes/CodeExecution");
-
+const notificationRoutes = require("./routes/Notification");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const {cloudinaryConnect } = require("./config/cloudinary");
 const fileUpload = require("express-fileupload");
 const dotenv = require("dotenv");
+const dns = require("dns");
 
 dotenv.config();
+
+const rawDnsServers = process.env.DNS_SERVERS;
+if (typeof rawDnsServers === "string" && rawDnsServers.trim().length > 0) {
+	const servers = rawDnsServers
+		.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean);
+
+	if (servers.length > 0) {
+		try {
+			dns.setServers(servers);
+			console.log(`DNS override enabled: ${servers.join(", ")}`);
+		} catch (e) {
+			console.error("Invalid DNS_SERVERS value; expected comma-separated IPs");
+			console.error(e);
+			process.exit(1);
+		}
+	}
+}
+
 const PORT = process.env.PORT || 4000;
 const allowedOrigins = [
 	process.env.FRONTEND_URL,
@@ -62,7 +83,7 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/code", codeExecutionRoutes);
-
+app.use("/api/v1/notification", notificationRoutes);
 app.get("/", (req, res) => {
 	return res.json({
 		success:true,
@@ -91,4 +112,4 @@ function startServer(portToUse) {
 }
 
 startServer(basePort);
-
+require("./workers/sqsConsumer").startConsumer();

@@ -4,6 +4,7 @@ import { NavbarLinks } from "../../data/navbar-links";
 import { useSelector } from "react-redux";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ProfileDropDown from "../core/Auth/ProfileDropDown";
+import NotificationBell from "./NotificationBell";
 import { apiConnector } from "../../services/apiconnector";
 import { categories } from "../../services/apis";
 import { IoIosArrowDown } from "react-icons/io";
@@ -128,6 +129,7 @@ const Navbar = () => {
             </div>
           )}
 
+          {token !== null && <NotificationBell />}
           {token !== null && <ProfileDropDown />}
         </div>
 

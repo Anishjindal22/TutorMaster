@@ -79,7 +79,7 @@ function LoginForm() {
       </label>
       <button
         type="submit"
-        className="mt-4 rounded-xl bg-gradient-to-r from-brand-primary to-brand-secondary py-3.5 px-4 font-bold text-white hover:opacity-90 hover:shadow-glow transition-all duration-300 transform hover:-translate-y-0.5"
+        className="mt-4 rounded-xl bg-brand-primary py-3.5 px-4 font-bold text-black hover:opacity-90 hover:shadow-none transition-all duration-300 transform hover:-translate-y-0.5"
       >
         Sign In
       </button>

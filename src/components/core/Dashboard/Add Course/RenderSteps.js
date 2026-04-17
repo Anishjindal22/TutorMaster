@@ -1,86 +1,73 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { Fragment } from "react"
+import { useSelector } from "react-redux"
 import { FaCheck } from "react-icons/fa"
 
 import CourseBuilderForm from "./CourseBuilder/CourseBuilderForm"
 import CourseInformationForm from "./CourseInformation/CourseInformationForm.js"
 import PublishCourse from "./PublishCourse"
+
 const RenderSteps = () => {
-    const {step} = useSelector((state)=> state.course)
+  const { step } = useSelector((state) => state.course)
 
-    const steps = [ 
-        {id:1,
-        title: "Course Information"},
-        {
-            id: 2,
-            title: "Course Builder",
-          },
-          {
-            id: 3,
-            title: "Publish",
-          }
-    ]
+  const steps = [
+    { id: 1, title: "Course Information" },
+    { id: 2, title: "Course Builder" },
+    { id: 3, title: "Publish" },
+  ]
+
   return (
-    <>
-        <div className="relative mb-2 flex w-full justify-center">
-            {steps.map((item)=> (
-                <>  
-                {/* Step Circle */}
-                    <div className="flex flex-col items-center " key={item.id}>
-                        <button
-                        className={`cursor-default aspect-square w-[34px]
-                         place-items-center rounded-full border-[1px] 
-                         ${step === item.id ? ' border-yellow-50 bg-yellow-900 text-yellow-50' 
-                         : ' border-richblack-700 bg-richblack-800 text-richblack-300'}
-                         ${step > item.id ? ' bg-yellow-50' :'text-yellow-50'}`}
-                         >
-                            {step > item.id ? (
-                                <FaCheck className='font-bold text-richblack-900'/>
-                            ) : 
-                            (item.id)}
-                        </button>
-                    </div>
-                {/* Dotted Line */}
-                    {item.id !== steps.length && (
-                        <>
-                            <div key={item.id}
-                            className={`h-[calc(34px/2)] w-[33%]  border-dashed border-b-2 
-                            ${step > item.id  ? "border-yellow-50" : "border-richblack-500"}`}
-                            ></div>
-                        </>
-                    )}
-                </>
-            ))}
-        </div>
+    <div className="w-full">
+      <div className="mb-6 flex w-full items-center justify-between gap-2">
+        {steps.map((item) => {
+          const isCurrent = step === item.id
+          const isCompleted = step > item.id
 
-        {/* Steps titles */}
-      <div className="relative mb-16 flex w-full select-none justify-between">
-        {steps.map((item) => (
-          <>
-            <div
-              className="flex min-w-[130px] flex-col items-center gap-y-2"
-              key={item.id}
-            >
-              
-              <p
-                className={`text-sm ${
-                  step >= item.id ? "text-richblack-5" : "text-richblack-500"
-                }`}
-              >
-                {item.title}
-              </p>
-            </div>
-            
-          </>
-        ))}
+          return (
+            <Fragment key={item.id}>
+              <div className="flex flex-1 flex-col items-center">
+                <div
+                  className={
+                    "flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-colors " +
+                    (isCompleted
+                      ? "border-brand-primary bg-brand-primary text-black"
+                      : isCurrent
+                        ? "border-brand-primary bg-surface-dark text-text-main"
+                        : "border-surface-border bg-surface-dark text-text-muted")
+                  }
+                  aria-current={isCurrent ? "step" : undefined}
+                >
+                  {isCompleted ? <FaCheck className="text-sm" /> : item.id}
+                </div>
+                <p
+                  className={
+                    "mt-3 hidden text-center text-xs font-medium sm:block " +
+                    (step >= item.id ? "text-text-main" : "text-text-muted")
+                  }
+                >
+                  {item.title}
+                </p>
+              </div>
+
+              {item.id !== steps.length && (
+                <div
+                  className={
+                    "h-px flex-[2] bg-surface-border transition-colors " +
+                    (step > item.id ? "bg-brand-primary" : "bg-surface-border")
+                  }
+                  aria-hidden="true"
+                />
+              )}
+            </Fragment>
+          )
+        })}
       </div>
 
-      {/* Render specific component based on current step */}
-      {step === 1 && <CourseInformationForm />}
-      {step === 2 && <CourseBuilderForm />}
-      {step === 3 &&  <PublishCourse /> }
-
-    </>
+      <div className="mt-8">
+        {step === 1 && <CourseInformationForm />}
+        {step === 2 && <CourseBuilderForm />}
+        {step === 3 && <PublishCourse />}
+      </div>
+    </div>
   )
 }
 

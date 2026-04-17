@@ -83,19 +83,19 @@ const VerifyEmail = () => {
             />
             <button
               type="submit"
-              className="w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900"
+              className="w-full bg-brand-primary py-3 px-3 rounded-lg mt-6 font-bold text-black hover:opacity-90 transition-opacity"
             >
               Verify Email
             </button>
           </form>
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-6 flex items-center justify-between text-sm">
             <Link to="/signup">
-              <p className="text-richblack-5 flex items-center gap-x-2">
+              <p className="text-text-muted hover:text-white flex items-center gap-x-2 transition-colors">
                 <BiArrowBack /> Back To Signup
               </p>
             </Link>
             <button
-              className="flex items-center text-blue-100 gap-x-2"
+              className="flex items-center text-brand-primary hover:text-brand-primary/80 gap-x-2 transition-colors"
               onClick={() => dispatch(sendOtp(signupData?.email, navigate))}
             >
               <RxCountdownTimer />

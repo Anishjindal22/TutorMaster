@@ -36,7 +36,6 @@ const SubSectionModal = ({
 
     useEffect(() => {
       if(view || edit) {
-        // console.log("Modal data for edit/view", modalData)
         setValue("lectureTitle", modalData.title)
         setValue("lectureDesc", modalData.description)
         setValue("lectureVideo", modalData.videoUrl)
@@ -56,12 +55,9 @@ const SubSectionModal = ({
         return false
     }
 
-    // handle the editing of subsection
   const handleEditSubsection = async () => {
     const currentValues = getValues()
-    // console.log("changes after editing form values:", currentValues)
     const formData = new FormData()
-    // console.log("Values After Editing form values:", currentValues)
     formData.append("sectionId", modalData.sectionId)
     formData.append("subSectionId", modalData._id)
     if (currentValues.lectureTitle !== modalData.title) {
@@ -74,12 +70,9 @@ const SubSectionModal = ({
       formData.append("video", currentValues.lectureVideo)
     }
 
-    // console.log("Values After Editing form values:", formData)
     setLoading(true)
     const result = await updateSubSection(formData, token)
     if (result) {
-      // console.log("result", result)
-      // update the structure of course
       const updatedCourseContent = course.courseContent.map((section) =>
         section._id === modalData.sectionId ? result : section
       )
@@ -91,7 +84,6 @@ const SubSectionModal = ({
   }
 
   const onSubmit = async (data) => {
-    // console.log(data)
     if (view) return
 
     if (edit) {
@@ -111,7 +103,6 @@ const SubSectionModal = ({
     setLoading(true)
     const result = await createSubSection(formData, token)
     if (result) {
-      // update the structure of course
       const updatedCourseContent = course.courseContent.map((section) =>
         section._id === modalData ? result : section
       )
@@ -122,23 +113,20 @@ const SubSectionModal = ({
     setLoading(false)
   }
   return (
-    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
-      <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">
-          <p className="text-xl font-semibold text-richblack-5">
+    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-[#090605]/70 backdrop-blur-sm">
+      <div className="my-10 w-11/12 max-w-[700px] rounded-2xl border border-[#734f3d] bg-[#140d0b] shadow-[0_28px_80px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center justify-between rounded-t-2xl border-b border-[#4f3427] bg-[#201511] p-5">
+          <p className="text-xl font-semibold text-[#fee7d2]">
             {view && "Viewing"} {add && "Adding"} {edit && "Editing"} Lecture
           </p>
           <button onClick={() => (!loading ? setModalData(null) : {})}>
-            <RxCross2 className="text-2xl text-richblack-5" />
+            <RxCross2 className="text-2xl text-[#fee7d2]" />
           </button>
         </div>
-        {/* Modal Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-8 px-8 py-10"
         >
-          {/* Lecture Video Upload */}
           <Upload
             name="lectureVideo"
             label="Lecture Video"
@@ -149,9 +137,8 @@ const SubSectionModal = ({
             viewData={view ? modalData.videoUrl : null}
             editData={edit ? modalData.videoUrl : null}
           />
-          {/* Lecture Title */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm text-richblack-5" htmlFor="lectureTitle">
+            <label className="add-course-label" htmlFor="lectureTitle">
               Lecture Title {!view && <sup className="text-pink-200">*</sup>}
             </label>
             <input
@@ -159,7 +146,7 @@ const SubSectionModal = ({
               id="lectureTitle"
               placeholder="Enter Lecture Title"
               {...register("lectureTitle", { required: true })}
-              className="form-style w-full"
+              className="add-course-input w-full"
             />
             {errors.lectureTitle && (
               <span className="ml-2 text-xs tracking-wide text-pink-200">
@@ -167,9 +154,8 @@ const SubSectionModal = ({
               </span>
             )}
           </div>
-          {/* Lecture Description */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm text-richblack-5" htmlFor="lectureDesc">
+            <label className="add-course-label" htmlFor="lectureDesc">
               Lecture Description{" "}
               {!view && <sup className="text-pink-200">*</sup>}
             </label>
@@ -178,7 +164,7 @@ const SubSectionModal = ({
               id="lectureDesc"
               placeholder="Enter Lecture Description"
               {...register("lectureDesc", { required: true })}
-              className="form-style resize-x-none min-h-[130px] w-full"
+              className="add-course-input min-h-[130px] w-full resize-x-none"
             />
             {errors.lectureDesc && (
               <span className="ml-2 text-xs tracking-wide text-pink-200">

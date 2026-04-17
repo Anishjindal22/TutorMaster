@@ -53,16 +53,16 @@ const NestedView = ({handleChangeEditSectionName}) => {
   return (
     <>
         <div
-        className="rounded-lg bg-richblack-700 p-6 px-8"
+        className="rounded-2xl border border-[#5c3d30] bg-[#1a120f] p-6 px-6 sm:px-8"
         id="nestedViewContainer">
             {course?.courseContent?.map((section) => (
                 //Section DropDown
                 <details key={section._id} open>
                 {/* Section Dropdown Content */}
-                <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-richblack-600 py-2">
+                <summary className="flex cursor-pointer items-center justify-between border-b border-b-[#4b342a] py-3">
                 <div className="flex items-center gap-x-3">
-                    <RxDropdownMenu className="text-2xl text-richblack-50" />
-                    <p className="font-semibold text-richblack-50">
+                    <RxDropdownMenu className="text-2xl text-[#f3d4bd]" />
+                    <p className="font-semibold text-[#f3d4bd]">
                     {section.sectionName}
                     </p>
                 </div>
@@ -75,7 +75,7 @@ const NestedView = ({handleChangeEditSectionName}) => {
                         )
                     }
                     >
-                    <MdEdit className="text-xl text-richblack-300" />
+                    <MdEdit className="text-xl text-[#d5b39c]" />
                     </button>
                     <button
                     onClick={() =>
@@ -89,10 +89,10 @@ const NestedView = ({handleChangeEditSectionName}) => {
                         })
                     }
                     >
-                    <RiDeleteBin6Line className="text-xl text-richblack-300" />
+                    <RiDeleteBin6Line className="text-xl text-[#d5b39c]" />
                     </button>
-                    <span className="font-medium text-richblack-300">|</span>
-                    <AiFillCaretDown className={`text-xl text-richblack-300`} />
+                    <span className="font-medium text-[#8f7365]">|</span>
+                    <AiFillCaretDown className={`text-xl text-[#d5b39c]`} />
                     </div>
                     </summary>
                     <div className="px-6 pb-4">
@@ -101,11 +101,11 @@ const NestedView = ({handleChangeEditSectionName}) => {
                         <div
                         key={data?._id}
                         onClick={() => setViewSubSection(data)}
-                        className="flex cursor-pointer items-center justify-between gap-x-3 border-b-2 border-b-richblack-600 py-2"
+                        className="flex cursor-pointer items-center justify-between gap-x-3 border-b border-b-[#35241d] py-2"
                         >
                         <div className="flex items-center gap-x-3 py-2 ">
-                            <RxDropdownMenu className="text-2xl text-richblack-50" />
-                            <p className="font-semibold text-richblack-50">
+                            <RxDropdownMenu className="text-2xl text-[#f3d4bd]" />
+                            <p className="font-semibold text-[#f3d4bd]">
                             {data.title}
                             </p>
                         </div>
@@ -118,7 +118,7 @@ const NestedView = ({handleChangeEditSectionName}) => {
                                 setEditSubSection({ ...data, sectionId: section._id })
                             }
                             >
-                            <MdEdit className="text-xl text-richblack-300" />
+                            <MdEdit className="text-xl text-[#d5b39c]" />
                             </button>
                             <button
                             onClick={() =>
@@ -133,7 +133,7 @@ const NestedView = ({handleChangeEditSectionName}) => {
                                 })
                             }
                             >
-                            <RiDeleteBin6Line className="text-xl text-richblack-300" />
+                            <RiDeleteBin6Line className="text-xl text-[#d5b39c]" />
                             </button>
                         </div>
                         </div>
@@ -141,7 +141,7 @@ const NestedView = ({handleChangeEditSectionName}) => {
                     {/* Add New Lecture to Section */}
                     <button
                         onClick={() => setAddSubSection(section._id)}
-                        className="mt-3 flex items-center gap-x-1 text-yellow-50"
+                        className="mt-4 flex items-center gap-x-1 text-[#ffbc87]"
                     >
                         <FaPlus className="text-lg" />
                         <p>Add Lecture</p>

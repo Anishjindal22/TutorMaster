@@ -86,14 +86,14 @@ const Home = () => {
 
       </div>
 
-      <div className="relative z-10 w-11/12 max-w-maxContent mx-auto py-20">
-        <div className="bg-surface-dim/30 border border-surface-border rounded-3xl p-8 lg:p-12 hover:shadow-glow transition-shadow duration-500">
+      <div className="relative z-10 w-11/12 max-w-maxContent mx-auto py-10">
+        <div className="bg-surface-dim/30 border border-surface-border rounded-3xl p-8 lg:p-12">
           <CodeBlocks 
             position={"lg:flex-row"}
             heading={
               <div className='text-4xl md:text-5xl font-extrabold text-white'>
                 Learn by building
-                <span className="block mt-2 text-text-main italic font-light">
+                <span className="block mt-2 text-text-main">
                   real projects
                 </span>
               </div>
@@ -103,22 +103,12 @@ const Home = () => {
             }
             ctabtn1={{
               btnText: "Start Free",
-              linkto: "/signup",
-              active: true,
+              linkto: "/signup"
             }}
             ctabtn2={{
               btnText: "Browse Courses",
-              linkto: "/catalog/web-development",
-              active: false,
+              linkto: "/catalog/web-development"
             }}
-            codeblock={`const plan = {
-  learn: "Concept",
-  build: "Project",
-  improve: "Feedback",
-};
-
-ship(plan);`}
-            codeColor={"text-text-main"}
           />
         </div>
       </div>

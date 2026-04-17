@@ -24,7 +24,6 @@ const VideoDetails = () => {
     
   useEffect(() => {
     const setVideoSpecificDetails = () => {
-        // console.log("In VideoDetails, courseSectionData",courseSectionData)
         if(!courseSectionData.length)
             return;
         if(!courseId && !sectionId && !subSectionId) {

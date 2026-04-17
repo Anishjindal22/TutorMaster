@@ -12,19 +12,8 @@ const ViewCourse = () => {
     const {token} = useSelector((state)=> state.auth);
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     dispatch(setCourseSectionData([]));
-        
-    //     dispatch(setEntireCourseData([]));
-        
-    //     dispatch(setCompletedLectures(0))
-        
-    // }, [])
-    
-
     useEffect(() => {
     const setCourseSpecificDetails = async () => {
-        // console.log("In video details page", courseId)
         const courseData = await getFullDetailsOfCourse(courseId, token);
         dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
         

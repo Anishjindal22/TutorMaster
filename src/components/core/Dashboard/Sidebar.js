@@ -30,10 +30,40 @@ const Sidebar = () => {
     <>
         <div className='flex h-[calc(100vh-3.5rem)] min-w-[240px] flex-col border-r border-surface-border bg-surface-dim py-10 z-20 overflow-y-auto custom-scrollbar sticky top-14 left-0'>
             <div className='flex flex-col gap-2 px-4'>
-                {sidebarLinks.map((link)=>{
-                        if (link.type && user?.accountType !== link.type) return null;
-                        return <SidebarLink key={link.id} link={link} iconName = {link.icon}/>
-                        })}
+                {sidebarLinks.map((link) => {
+                  // Allow instructors to access Code Practice even though it's typed as Student
+                  if (link.name === "Code Practice" && user?.accountType === "Instructor") {
+                    return (
+                      <SidebarLink
+                        key={link.id}
+                        link={link}
+                        iconName={link.icon}
+                      />
+                    )
+                  }
+
+                  // "Send Notification" exists twice in links (Instructor + Admin). Show the correct one.
+                  if (link.name === "Send Notification") {
+                    if (!link.type) return null
+                    if (user?.accountType !== link.type) return null
+                    return (
+                      <SidebarLink
+                        key={link.id}
+                        link={link}
+                        iconName={link.icon}
+                      />
+                    )
+                  }
+
+                  if (link.type && user?.accountType !== link.type) return null
+                  return (
+                    <SidebarLink
+                      key={link.id}
+                      link={link}
+                      iconName={link.icon}
+                    />
+                  )
+                })}
             </div>
 
             <div className="mx-auto my-8 h-[1px] w-10/12 bg-surface-border" />

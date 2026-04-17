@@ -1,77 +1,58 @@
 import React from 'react'
-import CTAButton from "../HomePage/Button"
-import {FaArrowRight} from "react-icons/fa"
-import { TypeAnimation } from 'react-type-animation'
-import "./Border.css";
+import { Link } from 'react-router-dom'
+import { FaArrowRight, FaLaptopCode, FaCheckCircle } from 'react-icons/fa'
+
 const CodeBlocks = ({
-    position, heading, subheading, ctabtn1, ctabtn2, codeblock, codeColor
+    position, heading, subheading, ctabtn1, ctabtn2, codeblock
 }) => {
   return (
-    <div className={`flex ${position} my-20 justify-between flex-col gap-10`}>
+    <div className={`flex ${position} my-10 lg:my-20 justify-between flex-col lg:flex-row gap-16 lg:gap-10`}>
       
-    {/*Section 1*/}
-    <div className='w-[100%] lg:w-[50%] flex flex-col gap-8'>
-        {heading}
-        <div className='text-richblack-300 text-base font-bold w-[85%] -mt-3 '>
-            {subheading}
-        </div>
+      {/* Text Section */}
+      <div className='w-full lg:w-1/2 flex flex-col gap-8'>
+          {heading}
+          <div className='text-text-muted text-lg leading-relaxed '>
+              {subheading}
+          </div>
 
-        <div className='flex gap-7 mt-7'>
-            <CTAButton active={ctabtn1.active} linkto={ctabtn1.linkto}>
-                <div className='flex gap-2 items-center'>
-                    {ctabtn1.btnText}
-                    <FaArrowRight/>
-                </div>
-            </CTAButton>
+          <div className='flex gap-5 mt-4'>
+              <Link to={ctabtn1.linkto} className='inline-flex items-center gap-2 bg-brand-primary text-black font-bold px-6 py-3 rounded-xl hover:bg-brand-primary/90 transition-all'>
+                  {ctabtn1.btnText}
+                  <FaArrowRight size={14}/>
+              </Link>
 
-            <CTAButton active={ctabtn2.active} linkto={ctabtn2.linkto}>  
-                    {ctabtn2.btnText}
-            </CTAButton>
-        </div>
+              <Link to={ctabtn2.linkto} className='inline-flex items-center gap-2 bg-surface-light border border-surface-border text-text-main font-bold px-6 py-3 rounded-xl hover:bg-surface-dim hover:text-white transition-all'>  
+                      {ctabtn2.btnText}
+              </Link>
+          </div>
+      </div>
 
+       {/* Feature List Section instead of typewriter code */}
+       <div className='w-full lg:w-[45%] flex flex-col gap-6 bg-surface-dark border border-surface-border rounded-2xl p-8 relative overflow-hidden'> 
+          <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary"></div>
+          
+          <div className="flex items-center gap-4 mb-2">
+              <div className="bg-surface-light p-3 rounded-xl text-brand-primary">
+                  <FaLaptopCode size={24} />
+              </div>
+              <h3 className="text-xl font-bold text-white">The Tutor Master Edge</h3>
+          </div>
 
-    </div>
-
-     {/*Section 2*/}
-     <div className=' h-fit code-border flex flex-row py-3 text-[10px] sm:text-sm leading-[18px] sm:leading-6 relative w-[100%] lg:w-[470px]'> 
-        {/*HW -> BG gradient*/}
-        <div className='absolute gradient-custom
-        w-[373px] h-[257px] rounded-full blur-2xl opacity-20 -left-2 -top-2'></div>
-        <div className='text-center flex select-none flex-col w-[10%]
-         text-richblack-400 font-inter font-bold'>
-            <p>1</p>
-            <p>2</p>
-            <p>3</p>
-            <p>4</p>
-            <p>5</p>
-            <p>6</p>
-            <p>7</p>
-            <p>8</p>
-            <p>9</p>
-            <p>10</p>
-            <p>11</p>
-        </div>
-
-        <div className={`w-[90%] flex flex-col gap-2 font-bold 
-        font-mono ${codeColor} pr-1`}>
-           <TypeAnimation
-            sequence={[codeblock, 2000, ""]}
-            repeat={Infinity}
-            cursor={true}
-           
-            style = {
-                {
-                    whiteSpace: "pre-line",
-                    display:"block",
-                }
-            }
-            omitDeletionAnimation={true}
-           />
-        </div>
-
-     </div>
-
-
+          <ul className="space-y-4 text-text-muted">
+            <li className="flex items-start gap-3">
+              <FaCheckCircle className="text-brand-primary mt-1 shrink-0" />
+              <span><strong className="text-text-main">Short focused lessons:</strong> Skip the fluff and get straight to the core concepts you actually need.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <FaCheckCircle className="text-brand-primary mt-1 shrink-0" />
+              <span><strong className="text-text-main">Guided coding practice:</strong> Apply what you learn immediately in our integrated sandbox environment.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <FaCheckCircle className="text-brand-primary mt-1 shrink-0" />
+              <span><strong className="text-text-main">Instant feedback:</strong> Receive automated reviews and mentor guidance to help you improve faster.</span>
+            </li>
+          </ul>
+       </div>
     </div>
   )
 }

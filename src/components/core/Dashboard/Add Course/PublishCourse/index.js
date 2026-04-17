@@ -57,37 +57,34 @@ const PublishCourse = () => {
   }
 
   const onSubmit = () => {
-    // console.log(data)
     handleCoursePublish()
   }
   return (
-    <div className="rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
-      <p className="text-2xl font-semibold text-richblack-5">
+    <div className="add-course-panel p-6 sm:p-8">
+      <p className="add-course-section-title">
         Publish Settings
       </p>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Checkbox */}
-        <div className="my-6 mb-8">
-          <label htmlFor="public" className="inline-flex items-center text-lg">
+        <div className="my-6 mb-8 rounded-xl border border-[#654334] bg-[#1f1613] p-4">
+          <label htmlFor="public" className="inline-flex items-center text-lg text-[#fce4cf]">
             <input
               type="checkbox"
               id="public"
               {...register("public")}
-              className="border-gray-300 h-4 w-4 rounded bg-richblack-500 text-richblack-400 focus:ring-2 focus:ring-richblack-5"
+              className="h-4 w-4 rounded border border-[#9a664a] bg-[#2f211a] text-[#f6ab6a] focus:ring-2 focus:ring-[#ffb67f]"
             />
-            <span className="ml-2 text-richblack-400">
+            <span className="ml-2 text-[#e7c7ae]">
               Make this course as public
             </span>
           </label>
         </div>
 
-        {/* Next Prev Button */}
         <div className="ml-auto flex max-w-max items-center gap-x-4">
           <button
             disabled={loading}
             type="button"
             onClick={goBack}
-            className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900"
+            className="add-course-secondary-btn flex cursor-pointer items-center gap-x-2 rounded-xl px-[20px] py-[8px] font-semibold"
           >
             Back
           </button>

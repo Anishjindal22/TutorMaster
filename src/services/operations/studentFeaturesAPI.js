@@ -66,7 +66,6 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch,
             }  
         }
 
-        // Open the modal using options, as order is initialized => payment will be done =>  Payment done mail => verificationPayment => course successfully enrolled mail sent
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
         paymentObject.on("payment.failed", (response)=> {

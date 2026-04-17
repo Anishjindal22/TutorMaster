@@ -44,10 +44,10 @@ const Instructor = () => {
   return (
     <div>
     <div className="space-y-2">
-      <h1 className="text-2xl font-bold text-richblack-5">
+      <h1 className="text-2xl font-bold text-white">
         Hi {user?.firstName} 👋
       </h1>
-      <p className="font-medium text-richblack-200">
+      <p className="font-medium text-text-muted">
         Let's start something new
       </p>
     </div>
@@ -131,12 +131,12 @@ const Instructor = () => {
         </div>
       </div>
     ) : (
-      <div className="mt-20 rounded-md bg-richblack-800 p-6 py-20">
-        <p className="text-center text-2xl font-bold text-richblack-5">
+      <div className="mt-20 rounded-2xl bg-surface-dim/40 border border-surface-border p-6 py-20 flex flex-col items-center justify-center gap-4">
+        <p className="text-center text-2xl font-bold text-white">
           You have not created any courses yet
         </p>
         <Link to="/dashboard/add-course">
-          <p className="mt-1 text-center text-lg font-semibold text-yellow-50">
+          <p className="mt-1 text-center text-lg font-semibold text-brand-primary hover:text-brand-primary/80 transition-colors">
             Create a course
           </p>
         </Link>

@@ -71,7 +71,6 @@ exports.categoryPageDetails = async (req, res) => {
       })
       .exec();
 
-    //console.log("SELECTED COURSE", selectedCourses)
     // Handle the case when the category is not found
     if (!selectedCourses) {
       console.log("Category not found.");
@@ -104,7 +103,6 @@ exports.categoryPageDetails = async (req, res) => {
         populate: "ratingAndReviews",
       })
       .exec();
-    //console.log("Different COURSE", differentCourses)
     // Get top-selling courses across all categories
     const allCategories = await Category.find()
       .populate({

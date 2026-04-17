@@ -32,23 +32,17 @@ const CourseInformationForm = () => {
     const [courseCategories, setCourseCategories] = useState([])
     
     useEffect(() => {
-      // console.log("Course from slice in the step 1 form is", course)
-      // console.log("EditCourse from slice in the step 1 form is", editCourse)
       const getCategories = async () => {
         setLoading(true);
 
         const categories = await fetchCourseCategories()
-        // console.log("categories respnse is",categories)
         if (categories.length > 0) {
-            // console.log("categories", categories)
             setCourseCategories(categories)
           }
           setLoading(false)
       }
       
-       // if form is in edit mode
     if (editCourse) {
-        // console.log("data populated", editCourse)
         setValue("courseTitle", course.courseName)
         setValue("courseShortDesc", course.description)
         setValue("coursePrice", course.price)
@@ -80,12 +74,10 @@ const CourseInformationForm = () => {
     }
 
     const onSubmit = async (data)=> {
-        // console.log("Form Data is", data)
         if(editCourse){
             if(isFormUpdated()){
                 const currentValues = getValues()
                 const formData = new FormData()
-                // console.log(data)
                 formData.append("courseId", course._id)
                 if (currentValues.courseTitle !== course.courseName) {
                 formData.append("courseName", data.courseTitle)
@@ -117,7 +109,6 @@ const CourseInformationForm = () => {
                 if (currentValues.courseImage !== course.thumbnail) {
                 formData.append("thumbnailImage", data.courseImage)
                 }
-                // console.log("Edit Form data: ", formData)
                 setLoading(true)
                 const result = await editCourseDetails(formData, token)
                 setLoading(false)
@@ -155,18 +146,17 @@ const CourseInformationForm = () => {
     }
   return (
     <form onSubmit={handleSubmit(onSubmit)}
-    className="space-y-8 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6"
+    className="add-course-panel space-y-8 p-6 sm:p-8"
     >
-        {/* Course Title */}
         <div className="flex flex-col space-y-2">
-            <label className="text-sm text-richblack-5" htmlFor="courseTitle">
+            <label className="add-course-label" htmlFor="courseTitle">
             Course Title <sup className="text-pink-200">*</sup>
             </label>
             <input 
                 id='courseTitle'
                 placeholder='Enter Course Title'
                 {...register("courseTitle", {required: true})}
-                className='form-style w-full'
+                className='add-course-input w-full'
             />
             {
                 errors.courseTitle && (
@@ -177,14 +167,13 @@ const CourseInformationForm = () => {
             }
         </div>
         
-        {/* Course Description */}
         <div className='flex flex-col space-y-2'>
-            <label htmlFor='courseShortDesc' className=' text-sm text-richblack-5'>
+            <label htmlFor='courseShortDesc' className='add-course-label'>
                 Course Short Description <sup className=' text-pink-200'>*</sup>
             </label>
             <textarea id='courseShortDesc' placeholder='Enter Description'
                 {...register("courseShortDesc",{required:true})}
-                className=' form-style resize-x-none min-h-[130px] w-full'
+              className='add-course-input min-h-[130px] w-full resize-x-none'
             />
             {errors.courseShortDesc && (
             <span className="ml-2 text-xs tracking-wide text-pink-200">
@@ -193,9 +182,8 @@ const CourseInformationForm = () => {
             )}
         </div>
 
-        {/* Course Price */}
         <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="coursePrice">
+        <label className="add-course-label" htmlFor="coursePrice">
           Course Price <sup className="text-pink-200">*</sup>
         </label>
         <div className="relative">
@@ -209,9 +197,9 @@ const CourseInformationForm = () => {
                 value: /^(0|[1-9]\d*)(\.\d+)?$/,
               },
             })}
-            className="form-style w-full !pl-12"
+            className="add-course-input w-full !pl-12"
           />
-          <HiOutlineCurrencyRupee className="absolute left-3 top-1/2 inline-block -translate-y-1/2 text-2xl text-richblack-400" />
+          <HiOutlineCurrencyRupee className="absolute left-3 top-1/2 inline-block -translate-y-1/2 text-2xl text-[#d4aa87]" />
         </div>
         {errors.coursePrice && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
@@ -220,9 +208,8 @@ const CourseInformationForm = () => {
         )}
         </div>
         
-        {/* Course Category DropDown */}
         <div className="flex flex-col space-y-2">
-            <label htmlFor='courseCategory' className="text-sm text-richblack-5">
+            <label htmlFor='courseCategory' className="add-course-label">
                 Category <sup className="text-pink-200">*</sup>
             </label>
 
@@ -230,7 +217,7 @@ const CourseInformationForm = () => {
             id='courseCategory'
             defaultValue=""
             {...register("courseCategory", {required:true})}
-            className='form-style w-full'>
+            className='add-course-input w-full'>
                 <option value="" disabled>Choose a category</option>
                 {
                     !loading && 
@@ -248,7 +235,6 @@ const CourseInformationForm = () => {
             )}
         </div>
 
-        {/* Tags component */}
         <ChipInput
             label="Tags"
             name="courseTags"
@@ -259,7 +245,6 @@ const CourseInformationForm = () => {
             errors={errors}
         />
 
-        {/* Upload Component */}
         <Upload 
         name="courseImage"
         label="Course Thumbnail"
@@ -269,16 +254,15 @@ const CourseInformationForm = () => {
         editData={editCourse ? course?.thumbnail : null}
         />
 
-        {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
+        <label className="add-course-label" htmlFor="courseBenefits">
           Benefits of the course <sup className="text-pink-200">*</sup>
         </label>
         <textarea
           id="courseBenefits"
           placeholder="Enter benefits of the course"
           {...register("courseBenefits", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
+          className="add-course-input min-h-[130px] w-full resize-x-none"
         />
         {errors.courseBenefits && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
@@ -286,7 +270,6 @@ const CourseInformationForm = () => {
           </span>
         )}
       </div>
-      {/* Requirements/Instructions */}
       <RequirementsField
         name="courseRequirements"
         label="Requirements/Instructions"
@@ -301,7 +284,7 @@ const CourseInformationForm = () => {
             <button 
             onClick={()=> dispatch(setStep(2))}
             disabled={loading}
-            className={`flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900`}
+            className='add-course-secondary-btn flex cursor-pointer items-center gap-x-2 rounded-xl px-5 py-2.5 font-semibold'
             >
                 Continue Without Saving
             </button>

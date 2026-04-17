@@ -48,4 +48,24 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.STUDENT,
     icon: "VscCode",
   },
+  {
+    id: 8,
+    name: "Notifications",
+    path: "/dashboard/notifications",
+    icon: "VscBell",
+  },
+  {
+    id: 9,
+    name: "Send Notification",
+    path: "/dashboard/send-notification",
+    type: ACCOUNT_TYPE.INSTRUCTOR,
+    icon: "VscMegaphone",
+  },
+  {
+    id: 10,
+    name: "Send Notification",
+    path: "/dashboard/send-notification",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscMegaphone",
+  },
 ];
