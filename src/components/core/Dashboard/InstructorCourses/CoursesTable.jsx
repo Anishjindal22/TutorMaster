@@ -109,8 +109,8 @@ const CoursesTable = ({courses, setCourses}) => {
                         Drafted
                       </p>
                     ) : (
-                      <p className="flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-yellow-100">
-                        <div className="flex h-3 w-3 items-center justify-center rounded-full bg-yellow-100 text-richblack-700">
+                      <p className="flex w-fit flex-row items-center gap-2 rounded-full bg-surface-light px-2 py-[2px] text-[12px] font-medium text-caribbeangreen-50">
+                        <div className="flex h-3 w-3 items-center justify-center rounded-full bg-caribbeangreen-100 text-surface-dark">
                           <FaCheck size={8} />
                         </div>
                         Published

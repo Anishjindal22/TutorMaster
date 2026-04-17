@@ -42,7 +42,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
     }
 
     return (
-        <div className='flex flex-col gap-4 rounded-md bg-richblack-700 p-4 text-richblack-5'>
+        <div className='flex flex-col gap-4 rounded-xl bg-surface-dim border border-surface-border p-4 text-white'>
         <img 
             src={ThumbnailImage}
             alt='Course thumbnail'
@@ -53,7 +53,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
             Rs. {CurrentPrice}
         </div>
         <div className='flex flex-col gap-y-6'>
-            <button className='yellowButton'
+            <button className='w-full py-3 rounded-lg bg-brand-primary text-white font-semibold hover:opacity-90 transition-all'
                 onClick={
                     user && course?.studentsEnrolled.includes(user?._id)
                     ? ()=> navigate("/dashboard/enrolled-courses")
@@ -67,7 +67,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
 
         {
             (!course?.studentsEnrolled.includes(user?._id)) && (
-                <button onClick={handleAddToCart} className='blackButton'>
+                <button onClick={handleAddToCart} className='w-full py-3 rounded-lg bg-surface-light border border-surface-border text-white font-semibold hover:bg-surface-dim transition-all'>
                     Add to Cart
                 </button>
             )
@@ -75,7 +75,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
         </div>
 
         <div>
-            <p className='pb-3 pt-6 text-center text-sm text-richblack-25'>
+            <p className='pb-3 pt-6 text-center text-sm text-text-muted'>
                 30-Day Money-Back Guarantee
             </p> 
         </div>
@@ -83,7 +83,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
             <p className='my-2 text-xl font-semibold '>
                 This Course Includes:
             </p>
-            <div className='flex flex-col gap-3 text-sm text-caribbeangreen-100'>
+            <div className='flex flex-col gap-3 text-sm text-brand-secondary'>
                 {
                     JSON.parse(course?.instructions).map((item, index)=> (
                         <p key={index} className='flex gap-2'>
@@ -96,7 +96,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
         </div>
         <div className='text-center'>
             <button
-            className='mx-auto flex items-center gap-2 py-6 text-yellow-100 '
+            className='mx-auto flex items-center gap-2 py-6 text-brand-secondary '
             onClick={handleShare}
             >
                 Share

@@ -105,10 +105,14 @@ const CourseDetails = () => {
         studentsEnrolled,
         createdAt,
     } = courseData.data?.courseDetails;
+
+        const instructorName = instructor
+            ? `${instructor?.firstName || ""} ${instructor?.lastName || ""}`.trim() || "Unknown Instructor"
+            : "Unknown Instructor";
   return (
     <>
         {/* Details and Course Buy Card */}
-        <div className='relative w-full bg-richblack-800'>
+        <div className='relative w-full bg-surface-dim'>
             <div className='mx-auto box-content px-4 lg:w-[1260px] 2xl:relative '>
                 <div className='mx-auto grid min-h-[450px] max-w-maxContentTab justify-items-center py-8 lg:mx-0 lg:justify-items-start lg:py-0 xl:max-w-[810px]'>
                    
@@ -123,14 +127,14 @@ const CourseDetails = () => {
                         <p className='text-richblack-200'>{description}</p>
                         
                         <div className='text-md flex flex-wrap items-center gap-2'>
-                            <span className='text-yellow-25'>{avgReviewCount}</span>
+                            <span className='text-brand-secondary'>{avgReviewCount}</span>
                             <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
                             <span>{`(${ratingAndReviews.length} reviews) `}</span>
                             <span>{`(${studentsEnrolled.length} students enrolled)`}</span>
                         </div>
 
                         <div>
-                            <p>Created By {`${instructor.firstName}`}</p>
+                            <p>Created By {instructorName}</p>
                         </div>
 
                         <div className='flex flex-wrap gap-5 text-lg'>
@@ -150,8 +154,8 @@ const CourseDetails = () => {
                             Rs. {price}
                         </p>
 
-                        <button className='yellowButton'>Buy Now</button>
-                        <button className='blackButton'>Add to Cart</button>
+                        <button className='w-full py-3 rounded-lg bg-brand-primary text-white font-semibold hover:opacity-90 transition-all' onClick={handleBuyCourse}>Buy Now</button>
+                        <button className='w-full py-3 rounded-lg bg-surface-light border border-surface-border text-white font-semibold hover:bg-surface-dim transition-all' onClick={handleBuyCourse}>Add to Cart</button>
                    </div>
                     
                 </div>
@@ -195,7 +199,7 @@ const CourseDetails = () => {
                                 </div>
                                 <div>
                                     <button
-                                        className='text-yellow-25'
+                                        className='text-brand-secondary'
                                         onClick={() => setIsActive([])}>
                                         Collapse all Sections
                                     </button>
@@ -217,7 +221,7 @@ const CourseDetails = () => {
                                             </div>
 
                                             <div className=' space-x-4'>
-                                                <span className=' text-yellow-25'> {`${section.subSection.length} lecture(s)`} </span>
+                                                <span className=' text-brand-secondary'> {`${section.subSection.length} lecture(s)`} </span>
                                             </div>
                                         </div>
                                     </div>
@@ -246,14 +250,18 @@ const CourseDetails = () => {
                     <div className='mb-12 py-4'>
                         <p className="text-[28px] font-semibold">Author</p>
                         <div className=' flex items-center gap-4 py-4'>
-                                                        <div className='h-14 w-14 rounded-full border border-richblack-600 bg-richblack-800 grid place-items-center text-sm font-semibold'>
-                                                            {(instructor.firstName?.[0] || "U") + (instructor.lastName?.[0] || "")}
-                                                        </div>
-                            <p className='text-lg'>{instructor.firstName} {instructor.lastName}  </p>
+                            <div className='h-14 w-14 rounded-full border border-richblack-600 bg-richblack-800 grid place-items-center text-sm font-semibold'>
+                                {(instructor?.firstName?.[0] || "U") + (instructor?.lastName?.[0] || "")}
+                            </div>
+                            <p className='text-lg'>{instructorName}</p>
                         </div>
-                        <p className='text-lg'>
-                                {instructor.additionalDetails.about}
-                            </p>
+                        {instructor?.additionalDetails?.about ? (
+                          <p className='text-lg'>
+                            {instructor.additionalDetails.about}
+                          </p>
+                        ) : (
+                          <p className='text-lg text-richblack-200'>Instructor details unavailable.</p>
+                        )}
                     </div>
                 </div>
             </div>

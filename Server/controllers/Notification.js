@@ -35,7 +35,13 @@ exports.sendCourseNotification = async (req, res) => {
             courseId
         }));
 
-        await sendNotificationBatch(payloads);
+        const queued = await sendNotificationBatch(payloads);
+        if (!queued) {
+            return res.status(500).json({
+                success: false,
+                message: "Notification queueing failed (SQS not configured or batch send failed)",
+            });
+        }
 
         res.status(200).json({
             success: true,
@@ -71,7 +77,13 @@ exports.sendBroadcastNotification = async (req, res) => {
             type: "admin_broadcast"
         }));
 
-        await sendNotificationBatch(payloads);
+        const queued = await sendNotificationBatch(payloads);
+        if (!queued) {
+            return res.status(500).json({
+                success: false,
+                message: "Broadcast queueing failed (SQS not configured or batch send failed)",
+            });
+        }
 
         res.status(200).json({
             success: true,
@@ -101,7 +113,13 @@ exports.sendTargetedNotification = async (req, res) => {
             type: "admin_targeted"
         }));
 
-        await sendNotificationBatch(payloads);
+        const queued = await sendNotificationBatch(payloads);
+        if (!queued) {
+            return res.status(500).json({
+                success: false,
+                message: "Targeted notification queueing failed (SQS not configured or batch send failed)",
+            });
+        }
 
         res.status(200).json({
             success: true,

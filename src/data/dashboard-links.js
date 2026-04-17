@@ -68,4 +68,11 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscMegaphone",
   },
+  {
+    id: 11,
+    name: "Admin Dashboard",
+    path: "/dashboard/admin",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscDashboard",
+  },
 ];

@@ -31,6 +31,7 @@ import UpdatePassword from "./components/core/Dashboard/Settings/UpdatePassword"
 import CodePractice from "./components/core/Dashboard/CodePractice";
 import Notifications from "./components/core/Dashboard/Notifications";
 import SendNotification from "./components/core/Dashboard/SendNotification";
+import AdminDashboard from "./components/core/Dashboard/AdminDashboard";
 
 function App() {
   const { user } = useSelector((state) => state.profile)
@@ -41,6 +42,7 @@ function App() {
       <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="catalog/:catalogName" element={<Catalog/>} />
+            <Route path="catalog/:catalogName/*" element={<Catalog/>} />
             <Route path="courses/:courseId" element={<CourseDetails/>}/>
 
             <Route path="forgot-password" element={<OpenRoute><ForgotPassword/></OpenRoute>}/>
@@ -131,6 +133,10 @@ function App() {
                 path="dashboard/send-notification"
                 element={<SendNotification />}
               />
+            )}
+
+            {user?.accountType === ACCOUNT_TYPE.ADMIN && (
+              <Route path="dashboard/admin" element={<AdminDashboard />} />
             )}
 
           </Route>

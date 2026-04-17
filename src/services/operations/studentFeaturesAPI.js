@@ -47,8 +47,17 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch,
 
         console.log("Order Initialized, printing order response", orderResponse);
 
+                const razorpayKey =
+                    process.env.REACT_APP_RAZORPAY_KEY ||
+                    process.env.RAZORPAY_KEY;
+
+                if (!razorpayKey) {
+                    toast.error("Razorpay key missing. Set REACT_APP_RAZORPAY_KEY in frontend env.");
+                    return;
+                }
+
         const options = {
-            key: process.env.RAZORPAY_KEY,
+            key: razorpayKey,
             currency: orderResponse.data.message.currency,
             amount: `${orderResponse.data.message.amount}`,
             order_id:orderResponse.data.message.id,

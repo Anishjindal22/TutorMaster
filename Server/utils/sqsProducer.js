@@ -32,11 +32,12 @@ exports.sendNotificationBatch = async (payloads) => {
     }
 
     const chunkSize = 10;
+    let allBatchesSucceeded = true;
     for (let i = 0; i < payloads.length; i += chunkSize) {
         const chunk = payloads.slice(i, i + chunkSize);
         
-        const entries = chunk.map((payload, index) => ({
-
+        const entries = chunk.map((payload) => ({
+            Id: uuidv4(),
             MessageBody: JSON.stringify(payload),
         }));
 
@@ -47,13 +48,15 @@ exports.sendNotificationBatch = async (payloads) => {
             });
 
             const response = await sqsClient.send(command);
-            if(response.Failed && response.Failed.length > 0) {
-                 console.error("Failed to send some messages in batch:", response.Failed);
+            if (response.Failed && response.Failed.length > 0) {
+                allBatchesSucceeded = false;
+                console.error("Failed to send some messages in batch:", response.Failed);
             }
-             console.log(`Sent batch of ${chunk.length} messages to SQS`);
+            console.log(`Sent batch of ${chunk.length} messages to SQS`);
         } catch (error) {
+           allBatchesSucceeded = false;
            console.error("Error sending batch to SQS:", error);
         }
     }
-    return true;
+    return allBatchesSucceeded;
 };

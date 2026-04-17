@@ -54,6 +54,7 @@ export const courseEndpoints = {
     BASE_URL + "/course/getFullCourseDetails",
   LECTURE_COMPLETION_API: BASE_URL + "/course/updateCourseProgress",
   CREATE_RATING_API: BASE_URL + "/course/createRating",
+  SEARCH_COURSES_API: BASE_URL + "/course/searchCourses",
 }
 
 export const notificationEndpoints = {
@@ -64,6 +65,14 @@ export const notificationEndpoints = {
   MARK_NOTIFICATION_READ_API: BASE_URL + "/notification/mark-read",
   MARK_ALL_NOTIFICATIONS_READ_API: BASE_URL + "/notification/mark-all-read",
   GET_UNREAD_COUNT_API: BASE_URL + "/notification/unread-count",
+}
+
+export const adminEndpoints = {
+  GET_ALL_STUDENTS_API: BASE_URL + "/admin/students",
+  GET_ALL_INSTRUCTORS_API: BASE_URL + "/admin/instructors",
+  GET_ALL_COURSES_ADMIN_API: BASE_URL + "/admin/courses",
+  GET_ADMIN_STATS_API: BASE_URL + "/admin/stats",
+  CREATE_CATEGORY_ADMIN_API: BASE_URL + "/admin/createCategory",
 }
 
 // RATINGS AND REVIEWS

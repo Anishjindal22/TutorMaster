@@ -23,7 +23,7 @@ export default function IconBtn({
       >
         {children ? (
           <>
-            <span className={`${outline && "text-yellow-50"}`}>{text}</span>
+            <span className={`${outline && "text-brand-secondary"}`}>{text}</span>
             {children}
           </>
         ) : (

@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Course = require("../models/Course");
+const { cacheGet, cacheSet, cacheDelete } = require("../config/redis");
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
@@ -26,6 +27,8 @@ exports.createCategory = async (req, res) => {
       });
     }
 
+    await cacheDelete("all_categories");
+
     return res.status(200).json({
       success: true,
       message: "Tag created successfully",
@@ -40,10 +43,21 @@ exports.createCategory = async (req, res) => {
 
 exports.showAllCategories = async (req, res) => {
   try {
+    const cachedCategories = await cacheGet("all_categories");
+    if (cachedCategories) {
+      return res.status(200).json({
+        success: true,
+        message: "All tags received (cache)",
+        data: cachedCategories,
+      });
+    }
+
     const allCategories = await Category.find(
       {},
       { name: true, description: true }
     );
+
+    await cacheSet("all_categories", allCategories, 3600);
 
     return res.status(200).json({
       success: true,
@@ -61,7 +75,7 @@ exports.showAllCategories = async (req, res) => {
 exports.categoryPageDetails = async (req, res) => {
   try {
     const { categoryId } = req.body;
-    console.log("PRINTING CATEGORY ID: ", categoryId);
+    
     // Get courses for the specified category
     const selectedCourses = await Category.findById(categoryId)
       .populate({
@@ -73,14 +87,12 @@ exports.categoryPageDetails = async (req, res) => {
 
     // Handle the case when the category is not found
     if (!selectedCourses) {
-      console.log("Category not found.");
       return res
         .status(404)
         .json({ success: false, message: "Category not found" });
     }
     // Handle the case when there are no courses
-    if (selectedCourses.course.length === 0) {
-      console.log("No courses found for the selected category.");
+    if (!selectedCourses.course || selectedCourses.course.length === 0) {
       return res.status(404).json({
         success: false,
         message: "No courses found for the selected category.",
@@ -92,34 +104,29 @@ exports.categoryPageDetails = async (req, res) => {
       _id: { $ne: categoryId },
       course: { $not: { $size: 0 } },
     });
-    console.log("categoriesExceptSelected", categoriesExceptSelected);
-    let differentCourses = await Category.findOne(
-      categoriesExceptSelected[getRandomInt(categoriesExceptSelected.length)]
-        ._id
-    )
-      .populate({
-        path: "course",
-        match: { status: "Published" },
-        populate: "ratingAndReviews",
-      })
-      .exec();
+    
+    let differentCourses = null;
+    if (categoriesExceptSelected.length > 0) {
+      const randomCategory = categoriesExceptSelected[getRandomInt(categoriesExceptSelected.length)];
+      differentCourses = await Category.findById(randomCategory._id)
+        .populate({
+          path: "course",
+          match: { status: "Published" },
+          populate: "ratingAndReviews",
+        })
+        .exec();
+    }
+
     // Get top-selling courses across all categories
-    const allCategories = await Category.find()
-      .populate({
-        path: "course",
-        match: { status: "Published" },
-        populate: "ratingAndReviews",
-      })
-      .exec();
-    const allCourses = allCategories.flatMap((category) => category.courses);
     const mostSellingCourses = await Course.find({ status: "Published" })
       .sort({ "studentsEnrolled.length": -1 })
-      .populate("ratingAndReviews") // Sort by studentsEnrolled array length in descending order
+      .populate("ratingAndReviews")
+      .limit(10)
       .exec();
 
     res.status(200).json({
       selectedCourses: selectedCourses,
-      differentCourses: differentCourses,
+      differentCourses: differentCourses || { course: [] },
       mostSellingCourses,
       name: selectedCourses.name,
       description: selectedCourses.description,

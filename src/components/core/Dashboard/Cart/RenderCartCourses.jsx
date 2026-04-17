@@ -15,7 +15,7 @@ const RenderCartCourses = () => {
         <div
           key={course._id}
           className={`flex w-full flex-wrap items-start justify-between gap-6 ${
-            indx !== cart.length - 1 && "border-b border-b-richblack-400 pb-6"
+            indx !== cart.length - 1 && "border-b border-b-surface-border pb-6"
           } ${indx !== 0 && "mt-6"} `}
         >
           <div className="flex flex-1 flex-col gap-4 xl:flex-row">
@@ -32,13 +32,13 @@ const RenderCartCourses = () => {
                 {course?.category?.name}
               </p>
               <div className="flex items-center gap-2">
-                <span className="text-yellow-5">4.5</span>
+                <span className="text-brand-secondary">4.5</span>
                 <ReactStars
                   count={5}
                   value={course?.ratingAndReviews?.length}
                   size={20}
                   edit={false}
-                  activeColor="#ffd700"
+                  activeColor="#00E5FF"
                   emptyIcon={<FaStar />}
                   fullIcon={<FaStar />}
                 />
@@ -51,12 +51,12 @@ const RenderCartCourses = () => {
           <div className="flex flex-col items-end space-y-2">
             <button
               onClick={() => dispatch(removeFromCart(course._id))}
-              className="flex items-center gap-x-1 rounded-md border border-richblack-600 bg-richblack-700 py-3 px-[12px] text-pink-200"
+              className="flex items-center gap-x-1 rounded-md border border-surface-border bg-surface-light py-3 px-[12px] text-brand-accent"
             >
               <RiDeleteBin6Line />
               <span>Remove</span>
             </button>
-            <p className="mb-6 text-3xl font-medium text-yellow-100">
+            <p className="mb-6 text-3xl font-medium text-brand-secondary">
               ₹ {course?.price}
             </p>
           </div>

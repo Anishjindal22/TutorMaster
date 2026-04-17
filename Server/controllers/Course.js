@@ -393,3 +393,45 @@ exports.deleteCourse = async (req, res) => {
     });
   }
 };
+
+// ─── SEARCH COURSES (public, paginated) ───────────────────────────────────
+exports.searchCourses = async (req, res) => {
+  try {
+    const { query, page = 1, limit = 10 } = req.query;
+    if (!query || query.trim().length < 2) {
+      return res.status(200).json({ success: true, data: [], pagination: { total: 0, page: 1, limit: 10, totalPages: 0 } });
+    }
+
+    const regex = new RegExp(query.trim(), "i");
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const filter = {
+      status: "Published",
+      $or: [
+        { courseName: regex },
+        { courseDescription: regex },
+        { "tags": regex },
+      ],
+    };
+
+    const [courses, total] = await Promise.all([
+      Course.find(filter)
+        .select("courseName thumbnail price instructor")
+        .populate("instructor", "firstName lastName")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean(),
+      Course.countDocuments(filter),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: courses,
+      pagination: { total, page: parseInt(page), limit: parseInt(limit), totalPages: Math.ceil(total / parseInt(limit)) },
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};

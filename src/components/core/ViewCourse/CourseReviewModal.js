@@ -67,7 +67,7 @@ const CourseReviewModal = ({setReviewModal}) => {
             count={5}
             onChange={ratingChanged}
             size={24}
-            activeColor="#ffd700"
+            activeColor="#00E5FF"
           />
           <div className="flex w-11/12 flex-col space-y-2">
             <label

@@ -8,6 +8,13 @@ const { paymentSuccessEmail } = require("../mail/templates/paymentSuccessEmail")
 const crypto = require("crypto");
 const CourseProgress = require("../models/CourseProgress")
 exports.capturePayment = async (req, res) => {
+    if (!instance) {
+        return res.status(500).json({
+            success: false,
+            message: "Razorpay is not configured on the server",
+        });
+    }
+
     const {courses} = req.body;
     const userId =  req.user.id;
 
@@ -54,7 +61,12 @@ exports.capturePayment = async (req, res) => {
     const options = {
         amount: totalAmount * 100,
         currency,
-        receipt: Math.random(Date.now()).toString()
+        receipt: Math.random(Date.now()).toString(),
+        // Attach metadata so the webhook fallback can enroll without relying on the client
+        notes: {
+            courses: Array.isArray(courses) ? courses.join(",") : "",
+            userId: userId,
+        },
     }
 
     try {
@@ -70,7 +82,13 @@ exports.capturePayment = async (req, res) => {
 }
 
 exports.verifyPayment = async (req,res) => {
-    console.log("request in verifyPayment is", req)
+    if (!instance) {
+        return res.status(500).json({
+            success: false,
+            message: "Razorpay is not configured on the server",
+        });
+    }
+
     const razorpay_order_id = req.body?.razorpay_order_id;
     const razorpay_payment_id = req.body?.razorpay_payment_id;
     const razorpay_signature = req.body?.razorpay_signature;
@@ -94,7 +112,7 @@ exports.verifyPayment = async (req,res) => {
 
         return res.status(200).json({success:true, message:"Payment Verified"});
     }
-    return res.status(200).json({success:"false", message:"Payment Failed"});
+    return res.status(200).json({success:false, message:"Payment Failed"});
 }
 
 const enrollStudents = async (courses, userId, res) => {
@@ -162,3 +180,66 @@ exports.sendPaymentSuccessEmail = async (req,res) => {
         return res.status(500).json({success:false, message:"Could not send email"})
     }
 }
+
+// ─── RAZORPAY WEBHOOK (Server-side payment verification) ──────────────────
+exports.razorpayWebhook = async (req, res) => {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_SECRET;
+    
+    const signature = req.headers["x-razorpay-signature"];
+    if (!signature) {
+        return res.status(400).json({ success: false, message: "Missing signature" });
+    }
+
+    try {
+        const body = JSON.stringify(req.body);
+        const expectedSignature = crypto
+            .createHmac("sha256", webhookSecret)
+            .update(body)
+            .digest("hex");
+
+        if (expectedSignature !== signature) {
+            console.error("Webhook signature mismatch");
+            return res.status(400).json({ success: false, message: "Invalid signature" });
+        }
+
+        const event = req.body.event;
+        const payload = req.body.payload;
+
+        if (event === "payment.captured") {
+            const payment = payload.payment.entity;
+            const notes = payment.notes;
+
+            if (notes && notes.courses && notes.userId) {
+                const courseIds = notes.courses.split(",");
+                const userId = notes.userId;
+
+                for (const courseId of courseIds) {
+                    const course = await Course.findById(courseId);
+                    if (!course) continue;
+                    if (course.studentsEnrolled.includes(userId)) continue;
+
+                    await Course.findByIdAndUpdate(courseId, {
+                        $addToSet: { studentsEnrolled: userId },
+                    });
+
+                    await CourseProgress.findOneAndUpdate(
+                        { courseID: courseId, userId: userId },
+                        { courseID: courseId, userId: userId, completedVideos: [] },
+                        { upsert: true, new: true }
+                    );
+
+                    await User.findByIdAndUpdate(userId, {
+                        $addToSet: { courses: courseId },
+                    });
+                }
+
+                console.log(`Webhook: Enrolled user ${userId} in courses ${notes.courses}`);
+            }
+        }
+
+        return res.status(200).json({ success: true, message: "Webhook processed" });
+    } catch (error) {
+        console.error("Webhook error:", error);
+        return res.status(200).json({ success: true, message: "Webhook received" });
+    }
+};

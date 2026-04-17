@@ -1,21 +1,23 @@
 const express = require("express");
 const app = express();
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
 const paymentRoutes = require("./routes/Payments");
 const courseRoutes = require("./routes/Course");
 const codeExecutionRoutes = require("./routes/CodeExecution");
 const notificationRoutes = require("./routes/Notification");
+const adminRoutes = require("./routes/Admin");
 const database = require("./config/database");
+const { connectRedis } = require("./config/redis");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const {cloudinaryConnect } = require("./config/cloudinary");
 const fileUpload = require("express-fileupload");
-const dotenv = require("dotenv");
 const dns = require("dns");
-
-dotenv.config();
 
 const rawDnsServers = process.env.DNS_SERVERS;
 if (typeof rawDnsServers === "string" && rawDnsServers.trim().length > 0) {
@@ -47,6 +49,7 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 database.connectDB(); 
+connectRedis();
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -84,6 +87,7 @@ app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/code", codeExecutionRoutes);
 app.use("/api/v1/notification", notificationRoutes);
+app.use("/api/v1/admin", adminRoutes);
 app.get("/", (req, res) => {
 	return res.json({
 		success:true,

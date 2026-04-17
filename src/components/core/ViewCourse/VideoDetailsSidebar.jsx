@@ -123,7 +123,7 @@ const VideoDetailsSidebar = ({setReviewModal}) => {
                                                     <div
                                                     className={`flex gap-3  px-5 py-2 ${
                                                         videoBarActive === topic._id
-                                                        ? "bg-yellow-200 font-semibold text-richblack-800"
+                                                        ? "bg-brand-primary/20 font-semibold text-white"
                                                         : "hover:bg-richblack-900"
                                                     }`}
                                                     key={index}

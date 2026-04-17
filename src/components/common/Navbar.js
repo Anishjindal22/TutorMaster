@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, matchPath, useLocation } from "react-router-dom";
 import { NavbarLinks } from "../../data/navbar-links";
 import { useSelector } from "react-redux";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { IoSearch, IoClose } from "react-icons/io5";
 import ProfileDropDown from "../core/Auth/ProfileDropDown";
 import NotificationBell from "./NotificationBell";
 import { apiConnector } from "../../services/apiconnector";
-import { categories } from "../../services/apis";
+import { categories, courseEndpoints } from "../../services/apis";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
+import useDebounce from "../../hooks/useDebounce";
+import { ACCOUNT_TYPE } from "../../utils/constants";
 import "./loader.css";
 
 const Navbar = () => {
@@ -19,6 +22,14 @@ const Navbar = () => {
 
   const [subLinks, setSubLinks] = useState([]);
   const [scrolled, setScrolled] = useState(false);
+
+  // Search state
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const debouncedQuery = useDebounce(searchQuery, 500);
+  const searchRef = useRef(null);
 
   const fetchSublinks = async () => {
     try {
@@ -40,6 +51,52 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Debounced search — only calls backend after 500ms of no typing
+  useEffect(() => {
+    const fetchSearch = async () => {
+      if (!debouncedQuery || debouncedQuery.trim().length < 2) {
+        setSearchResults([]);
+        return;
+      }
+      setSearchLoading(true);
+      try {
+        const res = await apiConnector(
+          "GET",
+          `${courseEndpoints.SEARCH_COURSES_API}?query=${encodeURIComponent(debouncedQuery)}&limit=6`
+        );
+        if (res?.data?.success) {
+          setSearchResults(res.data.data);
+        } else {
+          setSearchResults([]);
+        }
+      } catch (err) {
+        setSearchResults([]);
+      }
+      setSearchLoading(false);
+    };
+    fetchSearch();
+  }, [debouncedQuery]);
+
+  // Close search on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+        setSearchQuery("");
+        setSearchResults([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Close search on route change
+  useEffect(() => {
+    setSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+  }, [location.pathname]);
 
   const matchRoute = (route) => {
     return matchPath({ path: route }, location.pathname);
@@ -72,7 +129,7 @@ const Navbar = () => {
                           subLinks.map((subLink, index) => (
                             <Link
                               className="relative overflow-hidden rounded-lg px-4 py-3 text-text-main transition-all hover:bg-surface-light group/link"
-                              to={`catalog/${subLink.name}`}
+                              to={`/catalog/${encodeURIComponent(subLink.name)}`}
                               key={index}
                             >
                               <span className="relative z-10 flex items-center gap-2">
@@ -92,7 +149,6 @@ const Navbar = () => {
                     <p className={`transition-colors duration-300 hover:text-text-main ${matchRoute(link?.path) ? "text-text-main" : ""}`}>
                       {link.title}
                     </p>
-                    {/* Active Route Indicator */}
                     <span className={`absolute -bottom-1 left-0 w-full h-[2px] rounded-full bg-brand-secondary transition-transform duration-300 origin-left ${matchRoute(link?.path) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100 opacity-50"}`}></span>
                   </Link>
                 )}
@@ -101,9 +157,79 @@ const Navbar = () => {
           </ul>
         </nav>
 
-        {/* Login/SignUp/Dashboard */}
-        <div className="hidden md:flex gap-x-4 items-center">
-          {user && user?.accountType !== "Instructor" && (
+        {/* Right Section: Search + Cart + Auth */}
+        <div className="hidden md:flex gap-x-3 items-center">
+          {/* Search */}
+          <div className="relative" ref={searchRef}>
+            {!searchOpen ? (
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="p-2 text-text-muted hover:text-white transition-colors"
+                aria-label="Search courses"
+              >
+                <IoSearch className="text-xl" />
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search courses..."
+                    className="w-[240px] rounded-lg bg-surface-dim border border-surface-border text-white text-sm px-3 py-2 pl-9 outline-none focus:border-brand-primary transition-all"
+                    autoFocus
+                  />
+                  <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm" />
+                </div>
+                <button
+                  onClick={() => { setSearchOpen(false); setSearchQuery(""); setSearchResults([]); }}
+                  className="p-1 text-text-muted hover:text-white transition-colors"
+                >
+                  <IoClose className="text-lg" />
+                </button>
+              </div>
+            )}
+
+            {/* Search Results Dropdown */}
+            {searchOpen && (searchResults.length > 0 || searchLoading || debouncedQuery.length >= 2) && (
+              <div className="absolute top-full right-0 mt-2 w-[340px] bg-surface-dim border border-surface-border rounded-xl shadow-2xl overflow-hidden z-50">
+                {searchLoading ? (
+                  <div className="flex justify-center p-4"><span className="loader"></span></div>
+                ) : searchResults.length > 0 ? (
+                  <div className="max-h-[360px] overflow-y-auto">
+                    {searchResults.map((course) => (
+                      <Link
+                        key={course._id}
+                        to={`/courses/${course._id}`}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-surface-light transition-colors border-b border-surface-border last:border-b-0"
+                      >
+                        <img
+                          src={course.thumbnail}
+                          alt=""
+                          className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-white truncate">
+                            {course.courseName}
+                          </p>
+                          <p className="text-xs text-text-muted">
+                            {course.instructor?.firstName} {course.instructor?.lastName} · ₹{course.price}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-4 py-6 text-center text-sm text-text-muted">
+                    No courses found for "{debouncedQuery}"
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {user && user?.accountType === ACCOUNT_TYPE.STUDENT && (
             <Link to="/dashboard/cart" className="relative group p-2">
               <AiOutlineShoppingCart className="text-2xl text-text-muted group-hover:text-brand-secondary transition-colors" />
               {totalItems > 0 && (

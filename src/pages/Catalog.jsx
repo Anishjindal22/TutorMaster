@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Footer from '../components/common/Footer'
-import { useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { apiConnector } from '../services/apiconnector';
 import { categories } from '../services/apis';
 import { getCatalogaPageData } from '../services/operations/pageAndComponentData';
@@ -9,7 +9,11 @@ import CourseSlider from '../components/core/Catalog/CourseSlider';
 
 const Catalog = () => {
 
-    const {catalogName} = useParams();
+    const location = useLocation();
+    // Extract full catalog name from URL to handle slashes (e.g., "Ai/Ml")
+    const fullCatalogName = decodeURIComponent(
+        location.pathname.replace(/^\/catalog\//, '')
+    );
     
     const [catalogPageData, setCatalogPageData] = useState(null);
     const [categoryId, setCategoryId] = useState("");
@@ -20,12 +24,20 @@ const Catalog = () => {
         const getCategories = async() => {
             setLoading(true)
             const res = await apiConnector("GET", categories.CATEGORIES_API);
+            const nameToMatch = fullCatalogName.toLowerCase().trim();
             const category_id = 
-            res?.data?.data?.filter((ct) => ct.name.split(" ").join("-").toLowerCase() === catalogName.split(" ").join("-").toLowerCase())[0]?._id;
-            setCategoryId(category_id);
+            res?.data?.data?.filter((ct) => ct.name.toLowerCase() === nameToMatch)[0]?._id;
+            if (!category_id) {
+                const relaxedId = res?.data?.data?.filter(
+                    (ct) => ct.name.replace(/[\s-]/g, "").toLowerCase() === nameToMatch.replace(/[\s-]/g, "").toLowerCase()
+                )[0]?._id;
+                setCategoryId(relaxedId || "");
+            } else {
+                setCategoryId(category_id);
+            }
         }
         getCategories();
-    },[catalogName]);
+    },[fullCatalogName]);
 
     useEffect(() => {
         const getCategoryDetails = async() => {
@@ -90,7 +102,7 @@ const Catalog = () => {
                         <p
                             className={`px-6 py-3 cursor-pointer transition-all duration-300 ${
                             active === 1
-                                ? "border-b-2 border-brand-secondary text-brand-secondary shadow-glow-cyan"
+                                ? "border-b-2 border-brand-secondary text-brand-secondary"
                                 : "text-text-muted hover:text-white hover:bg-surface-light rounded-t-lg"
                             }`}
                             onClick={() => setActive(1)}
@@ -100,7 +112,7 @@ const Catalog = () => {
                         <p
                             className={`px-6 py-3 cursor-pointer transition-all duration-300 ${
                             active === 2
-                                ? "border-b-2 border-brand-secondary text-brand-secondary shadow-glow-cyan"
+                                ? "border-b-2 border-brand-secondary text-brand-secondary"
                                 : "text-text-muted hover:text-white hover:bg-surface-light rounded-t-lg"
                             }`}
                             onClick={() => setActive(2)}

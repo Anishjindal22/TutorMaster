@@ -75,7 +75,7 @@ function ReviewSlider() {
                       : `${review?.review}`}
                   </p>
                   <div className="flex items-center gap-2 ">
-                    <h3 className="font-semibold text-yellow-100">
+                    <h3 className="font-semibold text-brand-secondary">
                       {review.rating.toFixed(1)}
                     </h3>
                     <ReactStars
@@ -83,7 +83,7 @@ function ReviewSlider() {
                       value={review.rating}
                       size={20}
                       edit={false}
-                      activeColor="#ffd700"
+                      activeColor="#00E5FF"
                       emptyIcon={<FaStar />}
                       fullIcon={<FaStar />}
                     />
