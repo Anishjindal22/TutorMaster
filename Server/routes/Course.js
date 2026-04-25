@@ -41,6 +41,7 @@ const {
 } = require("../controllers/RatingAndReview")
 
 const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth")
+const { publicReadLimiter } = require("../middlewares/rateLimiter")
 
 router.post("/createCourse", auth, isInstructor, createCourse)
 router.post("/addSection", auth, isInstructor, createSection)
@@ -49,8 +50,8 @@ router.post("/deleteSection", auth, isInstructor, deleteSection)
 router.post("/updateSubSection", auth, isInstructor, updateSubSection)
 router.post("/deleteSubSection", auth, isInstructor, deleteSubSection)
 router.post("/addSubSection", auth, isInstructor, createSubSection)
-router.get("/getAllCourses", showAllCourses)
-router.post("/getCourseDetails", getCourseDetails)
+router.get("/getAllCourses", publicReadLimiter, showAllCourses)
+router.post("/getCourseDetails", publicReadLimiter, getCourseDetails)
 router.post("/getFullCourseDetails", auth, getFullCourseDetails)
 router.post("/editCourse", auth, isInstructor, editCourse)
 router.get("/getInstructorCourses", auth, isInstructor, getInstructorCourses)
@@ -58,12 +59,12 @@ router.delete("/deleteCourse", deleteCourse)
 router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress);
 
 router.post("/createCategory", auth, isAdmin, createCategory)
-router.get("/showAllCategories", showAllCategories)
-router.post("/getCategoryPageDetails", categoryPageDetails)
+router.get("/showAllCategories", publicReadLimiter, showAllCategories)
+router.post("/getCategoryPageDetails", publicReadLimiter, categoryPageDetails)
 
 router.post("/createRating", auth, isStudent, createRating)
 router.get("/getAverageRating", getAverageRating)
 router.get("/getReviews", getAllRating)
-router.get("/searchCourses", searchCourses)
+router.get("/searchCourses", publicReadLimiter, searchCourses)
 
 module.exports = router

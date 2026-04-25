@@ -12,14 +12,9 @@ function shouldForceTls(redisUrl) {
 
 function normalizeRedisUrl(redisUrl) {
   if (!redisUrl) return redisUrl;
-
-  // If URL already uses rediss:// keep it.
   if (redisUrl.startsWith("rediss://")) return redisUrl;
-
-  // If TLS is required but user provided redis://, upgrade scheme.
   if (redisUrl.startsWith("redis://") && shouldForceTls(redisUrl)) {
     const upgraded = redisUrl.replace(/^redis:\/\//i, "rediss://");
-    console.log("Redis: REDIS_TLS=true; upgrading REDIS_URL scheme to rediss://");
     return upgraded;
   }
 
@@ -37,7 +32,7 @@ async function connectRedis() {
 
   const redisUrlRaw = process.env.REDIS_URL;
   if (!redisUrlRaw) {
-    console.log("REDIS_URL not set — caching disabled, using direct DB queries");
+    console.log("Redis not configured ,using MongoDb");
     return null;
   }
 
@@ -76,7 +71,7 @@ async function connectRedis() {
           await redisClient.quit();
         }
       } catch {
-        // ignore
+
       }
       redisClient = null;
       return null;
@@ -92,7 +87,6 @@ function getRedisClient() {
   return redisClient;
 }
 
-// Cache helper: get from cache or fetch from DB
 async function cacheGet(key) {
   if (!redisClient || !redisClient.isReady) return null;
   try {

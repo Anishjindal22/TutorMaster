@@ -1,7 +1,26 @@
 const Notification = require("../models/Notification");
 const Course = require("../models/Course");
-const User = require("../models/User");
-const { sendNotificationBatch } = require("../utils/sqsProducer");
+const mongoose = require("mongoose");
+const NotificationCampaign = require("../models/NotificationCampaign");
+const { sendDispatchMessage } = require("../utils/sqsProducer");
+
+const queueDispatchMessage = async (campaignId) => {
+    return sendDispatchMessage({
+        campaignId: campaignId.toString(),
+        cursor: null,
+        cursorIndex: 0,
+    });
+};
+
+const markCampaignFailed = async (campaignId, message) => {
+    await NotificationCampaign.findByIdAndUpdate(campaignId, {
+        status: "failed",
+        dispatchCompleted: true,
+        dispatchCompletedAt: new Date(),
+        completedAt: new Date(),
+        lastError: message,
+    });
+};
 
 exports.sendCourseNotification = async (req, res) => {
     try {
@@ -21,31 +40,33 @@ exports.sendCourseNotification = async (req, res) => {
             return res.status(403).json({ success: false, message: "You are not authorized to send notifications for this course" });
         }
 
-        const enrolledStudents = course.studentsEnrolled;
-        if (!enrolledStudents || enrolledStudents.length === 0) {
-            return res.status(400).json({ success: false, message: "No students enrolled in this course" });
-        }
-
-        const payloads = enrolledStudents.map(studentId => ({
-            senderId: instructorId,
-            recipientId: studentId.toString(),
+        const campaign = await NotificationCampaign.create({
+            sender: instructorId,
+            senderRole: "Instructor",
             title,
             message,
             type: "course_update",
-            courseId
-        }));
+            courseId,
+            recipientConfig: {
+                mode: "course_students",
+                courseId,
+            },
+            status: "accepted",
+        });
 
-        const queued = await sendNotificationBatch(payloads);
+        const queued = await queueDispatchMessage(campaign._id);
         if (!queued) {
+            await markCampaignFailed(campaign._id, "Dispatch queue publish failed");
             return res.status(500).json({
                 success: false,
                 message: "Notification queueing failed (SQS not configured or batch send failed)",
             });
         }
 
-        res.status(200).json({
+        res.status(202).json({
             success: true,
-            message: `Notification queued for ${enrolledStudents.length} students`
+            campaignId: campaign._id,
+            message: "Notification campaign accepted and queued for dispatch",
         });
 
     } catch (error) {
@@ -63,31 +84,31 @@ exports.sendBroadcastNotification = async (req, res) => {
             return res.status(400).json({ success: false, message: "Title and message are required" });
         }
 
-        const users = await User.find({ active: true }, '_id');
-
-        if (!users || users.length === 0) {
-            return res.status(400).json({ success: false, message: "No active users found" });
-        }
-
-        const payloads = users.map(user => ({
-            senderId: adminId,
-            recipientId: user._id.toString(),
+        const campaign = await NotificationCampaign.create({
+            sender: adminId,
+            senderRole: "Admin",
             title,
             message,
-            type: "admin_broadcast"
-        }));
+            type: "admin_broadcast",
+            recipientConfig: {
+                mode: "all_active_users",
+            },
+            status: "accepted",
+        });
 
-        const queued = await sendNotificationBatch(payloads);
+        const queued = await queueDispatchMessage(campaign._id);
         if (!queued) {
+            await markCampaignFailed(campaign._id, "Dispatch queue publish failed");
             return res.status(500).json({
                 success: false,
                 message: "Broadcast queueing failed (SQS not configured or batch send failed)",
             });
         }
 
-        res.status(200).json({
+        res.status(202).json({
             success: true,
-            message: `Broadcast notification queued for ${users.length} users`
+            campaignId: campaign._id,
+            message: "Broadcast campaign accepted and queued for dispatch",
         });
 
     } catch (error) {
@@ -105,30 +126,80 @@ exports.sendTargetedNotification = async (req, res) => {
             return res.status(400).json({ success: false, message: "User IDs array, title and message are required" });
         }
 
-        const payloads = userIds.map(userId => ({
-            senderId: adminId,
-            recipientId: userId,
+        const validUserIds = [...new Set(
+            userIds
+                .map((id) => String(id).trim())
+                .filter((id) => mongoose.Types.ObjectId.isValid(id))
+        )];
+
+        if (validUserIds.length === 0) {
+            return res.status(400).json({ success: false, message: "No valid user IDs provided" });
+        }
+
+        const campaign = await NotificationCampaign.create({
+            sender: adminId,
+            senderRole: "Admin",
             title,
             message,
-            type: "admin_targeted"
-        }));
+            type: "admin_targeted",
+            recipientConfig: {
+                mode: "targeted_users",
+                userIds: validUserIds,
+            },
+            status: "accepted",
+        });
 
-        const queued = await sendNotificationBatch(payloads);
+        const queued = await queueDispatchMessage(campaign._id);
         if (!queued) {
+            await markCampaignFailed(campaign._id, "Dispatch queue publish failed");
             return res.status(500).json({
                 success: false,
                 message: "Targeted notification queueing failed (SQS not configured or batch send failed)",
             });
         }
 
-        res.status(200).json({
+        res.status(202).json({
             success: true,
-            message: `Targeted notification queued for ${userIds.length} users`
+            campaignId: campaign._id,
+            message: `Targeted campaign accepted for ${validUserIds.length} users`,
         });
 
     } catch (error) {
         console.error("Error sending targeted notification:", error);
         res.status(500).json({ success: false, message: "Failed to send targeted notification" });
+    }
+};
+
+exports.getCampaignStatus = async (req, res) => {
+    try {
+        const { campaignId } = req.params;
+        const requesterId = req.user.id;
+        const requesterRole = req.user.accountType;
+
+        if (!mongoose.Types.ObjectId.isValid(campaignId)) {
+            return res.status(400).json({ success: false, message: "Invalid campaign ID" });
+        }
+
+        const campaign = await NotificationCampaign.findById(campaignId)
+            .select(
+                "sender senderRole type title status totalRecipients queuedCount deliveredCount failedCount dispatchCompleted acceptedAt dispatchStartedAt dispatchCompletedAt completedAt lastError createdAt updatedAt"
+            )
+            .lean();
+
+        if (!campaign) {
+            return res.status(404).json({ success: false, message: "Campaign not found" });
+        }
+
+        const isOwner = campaign.sender?.toString() === requesterId;
+        const isAdmin = requesterRole === "Admin";
+        if (!isOwner && !isAdmin) {
+            return res.status(403).json({ success: false, message: "Not authorized to view this campaign" });
+        }
+
+        res.status(200).json({ success: true, data: campaign });
+    } catch (error) {
+        console.error("Error fetching campaign status:", error);
+        res.status(500).json({ success: false, message: "Failed to fetch campaign status" });
     }
 };
 

@@ -22,7 +22,6 @@ exports.createCourse = async (req, res) => {
     } = req.body;
 
     const thumbnail = req.files.thumbnailImage;
-    console.log("Thumbnail in course creation is", thumbnail);
     if (
       !courseName ||
       !courseDescription ||
@@ -127,9 +126,7 @@ exports.showAllCourses = async (req, res) => {
 
 exports.getCourseDetails = async (req, res) => {
   try {
-    //get id
     const { courseId } = req.body;
-    //find course details
     const courseDetails = await Course.findById(courseId)
       .populate({
         path: "instructor",
@@ -143,12 +140,9 @@ exports.getCourseDetails = async (req, res) => {
         path: "courseContent",
         populate: {
           path: "subSection",
-          //select: "-videoUrl",
         },
       })
       .exec();
-
-    //validation
     if (!courseDetails) {
       return res.status(400).json({
         success: false,
@@ -165,7 +159,6 @@ exports.getCourseDetails = async (req, res) => {
     });
 
     const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
-    //return response
     return res.status(200).json({
       success: true,
       message: "Course Details fetched successfully",
@@ -189,8 +182,6 @@ exports.editCourse = async (req, res) => {
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
-
-    // If Thumbnail Image is found, update it
     if (req.files) {
       console.log("thumbnail update");
       const thumbnail = req.files.thumbnailImage;
@@ -200,8 +191,6 @@ exports.editCourse = async (req, res) => {
       );
       course.thumbnail = thumbnailImage.secure_url;
     }
-
-    // Update only the fields that are present in the request body
     for (const key in updates) {
       if (updates.hasOwnProperty(key)) {
         course[key] = updates[key];
@@ -312,10 +301,7 @@ exports.getFullCourseDetails = async (req, res) => {
 // Get a list of Course for a given Instructor
 exports.getInstructorCourses = async (req, res) => {
   try {
-    // Get the instructor ID from the authenticated user or request body
     const instructorId = req.user.id;
-
-    // Find all courses belonging to the instructor
     const instructorCourses = await Course.find({
       instructor: instructorId,
     })
@@ -328,7 +314,6 @@ exports.getInstructorCourses = async (req, res) => {
       })
       .exec();
 
-    // Return the instructor's courses
     res.status(200).json({
       success: true,
       data: instructorCourses,
@@ -342,7 +327,6 @@ exports.getInstructorCourses = async (req, res) => {
     });
   }
 };
-// Delete the Course
 exports.deleteCourse = async (req, res) => {
   try {
     const { courseId } = req.body;

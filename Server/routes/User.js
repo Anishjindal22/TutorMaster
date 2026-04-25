@@ -13,12 +13,20 @@ const {
 } = require("../controllers/ResetPassword")
 
 const { auth } = require("../middlewares/auth")
+const {
+  loginLimiter,
+  signupLimiter,
+  otpLimiter,
+  resetPasswordTokenLimiter,
+  resetPasswordLimiter,
+  authLimiter,
+} = require("../middlewares/rateLimiter")
 
-router.post("/login", login)
-router.post("/signup", signUp)
-router.post("/sendotp", sendOtp)
-router.post("/changepassword", auth, changePassword)
+router.post("/login", loginLimiter, login)
+router.post("/signup", signupLimiter, signUp)
+router.post("/sendotp", otpLimiter, sendOtp)
+router.post("/changepassword", auth, authLimiter, changePassword)
 
-router.post("/reset-password-token", resetPasswordToken)
-router.post("/reset-password", resetPassword)
+router.post("/reset-password-token", resetPasswordTokenLimiter, resetPasswordToken)
+router.post("/reset-password", resetPasswordLimiter, resetPassword)
 module.exports = router

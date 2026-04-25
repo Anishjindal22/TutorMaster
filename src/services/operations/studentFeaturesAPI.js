@@ -26,8 +26,16 @@ function loadScript(src) {
 export const buyCourse = async (token, courses, userDetails, navigate, dispatch,)=> {
 
     const toastId = toast.loading("Loading...");
+    const normalizedCourses = (Array.isArray(courses) ? courses : [])
+        .map((course) => (typeof course === "string" ? course : course?._id))
+        .filter(Boolean);
 
     try {
+        if (normalizedCourses.length === 0) {
+            toast.error("Your cart is empty. Add a course before checkout.");
+            return;
+        }
+
         const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
         
         if (!res) {
@@ -36,13 +44,13 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch,
         }
 
         const orderResponse = await apiConnector("POST", COURSE_PAYMENT_API,
-                                                    {courses},
+                                                    { courses: normalizedCourses },
                                                     {  
                                                         Authorization: `Bearer ${token}`
                                                     })
 
-        if(!orderResponse.data.success){
-            throw new Error(orderResponse.data.message)
+        if(!orderResponse?.data?.success || !orderResponse?.data?.message?.id){
+            throw new Error(orderResponse?.data?.message || "Unable to initialize order")
         }
 
         console.log("Order Initialized, printing order response", orderResponse);
@@ -61,7 +69,7 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch,
             currency: orderResponse.data.message.currency,
             amount: `${orderResponse.data.message.amount}`,
             order_id:orderResponse.data.message.id,
-            name:"Tutor Master",
+            name:"SNotion",
             description: "Thank You for Purchasing the Course",
             image:rzpLogo,
             prefill: {
@@ -71,7 +79,7 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch,
             handler: (response)=> {
                 sendPaymentSuccessEmail(response, orderResponse.data.message.amount,token)
 
-                verifyPayment({...response, courses}, token, navigate, dispatch)
+                verifyPayment({...response, courses: normalizedCourses}, token, navigate, dispatch)
             }  
         }
 
@@ -83,7 +91,8 @@ export const buyCourse = async (token, courses, userDetails, navigate, dispatch,
         })
     } catch (error) {
         console.log("PAYMENT API ERROR.....", error);
-        toast.error("Could not make Payment");
+        const errorMessage = error?.response?.data?.message || error?.message || "Could not make Payment";
+        toast.error(errorMessage);
     }
 
     toast.dismiss(toastId)
@@ -124,7 +133,8 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
         dispatch(resetCart());
     } catch (error) {
         console.log("PAYMENT VERIFY ERROR....", error);
-        toast.error("Could not verify Payment");
+        const errorMessage = error?.response?.data?.message || error?.message || "Could not verify Payment";
+        toast.error(errorMessage);
     }
     toast.dismiss(toastId);
     dispatch(setPaymentLoading(false));

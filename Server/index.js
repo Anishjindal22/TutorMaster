@@ -3,14 +3,6 @@ const app = express();
 
 const dotenv = require("dotenv");
 dotenv.config();
-
-const userRoutes = require("./routes/User");
-const profileRoutes = require("./routes/Profile");
-const paymentRoutes = require("./routes/Payments");
-const courseRoutes = require("./routes/Course");
-const codeExecutionRoutes = require("./routes/CodeExecution");
-const notificationRoutes = require("./routes/Notification");
-const adminRoutes = require("./routes/Admin");
 const database = require("./config/database");
 const { connectRedis } = require("./config/redis");
 const cookieParser = require("cookie-parser");
@@ -39,6 +31,15 @@ if (typeof rawDnsServers === "string" && rawDnsServers.trim().length > 0) {
 }
 
 const PORT = process.env.PORT || 4000;
+const rawTrustProxyLevel = process.env.TRUST_PROXY_LEVEL;
+
+if (typeof rawTrustProxyLevel === "string" && rawTrustProxyLevel.trim().length > 0) {
+	const parsedTrustProxyLevel = Number(rawTrustProxyLevel);
+	app.set("trust proxy", Number.isFinite(parsedTrustProxyLevel) ? parsedTrustProxyLevel : rawTrustProxyLevel);
+} else {
+	app.set("trust proxy", 1);
+}
+
 const allowedOrigins = [
 	process.env.FRONTEND_URL,
 	process.env.CLIENT_URL,
@@ -49,7 +50,6 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 database.connectDB(); 
-connectRedis();
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -81,20 +81,6 @@ app.use(
 )
 cloudinaryConnect();
 
-app.use("/api/v1/auth", userRoutes);
-app.use("/api/v1/profile", profileRoutes);
-app.use("/api/v1/course", courseRoutes);
-app.use("/api/v1/payment", paymentRoutes);
-app.use("/api/v1/code", codeExecutionRoutes);
-app.use("/api/v1/notification", notificationRoutes);
-app.use("/api/v1/admin", adminRoutes);
-app.get("/", (req, res) => {
-	return res.json({
-		success:true,
-		message:'Your server is up and running....'
-	});
-});
-
 const basePort = Number(PORT) || 4000;
 
 function startServer(portToUse) {
@@ -115,5 +101,37 @@ function startServer(portToUse) {
 	return server;
 }
 
-startServer(basePort);
-require("./workers/sqsConsumer").startConsumer();
+async function bootstrapRoutes() {
+	await connectRedis();
+
+	const userRoutes = require("./routes/User");
+	const profileRoutes = require("./routes/Profile");
+	const paymentRoutes = require("./routes/Payments");
+	const courseRoutes = require("./routes/Course");
+	const codeExecutionRoutes = require("./routes/CodeExecution");
+	const notificationRoutes = require("./routes/Notification");
+	const adminRoutes = require("./routes/Admin");
+
+	app.use("/api/v1/auth", userRoutes);
+	app.use("/api/v1/profile", profileRoutes);
+	app.use("/api/v1/course", courseRoutes);
+	app.use("/api/v1/payment", paymentRoutes);
+	app.use("/api/v1/code", codeExecutionRoutes);
+	app.use("/api/v1/notification", notificationRoutes);
+	app.use("/api/v1/admin", adminRoutes);
+
+	app.get("/", (req, res) => {
+		return res.json({
+			success:true,
+			message:'Your server is up and running....'
+		});
+	});
+
+	startServer(basePort);
+	require("./workers/notificationWorkers").startNotificationWorkers();
+}
+
+bootstrapRoutes().catch((error) => {
+	console.error("Failed to bootstrap routes", error);
+	process.exit(1);
+});

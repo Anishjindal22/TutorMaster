@@ -222,10 +222,16 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.changePassword = async (req, res) => {
+
+ exports.changePassword = async (req, res) => {
   try {
     const userDetails = await User.findById(req.user.id);
-
+    if(!userDetails){
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
     const { oldPassword, newPassword } = req.body;
 
     const isPasswordMatch = await bcrypt.compare(

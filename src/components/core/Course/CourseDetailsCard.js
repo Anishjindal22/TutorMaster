@@ -16,6 +16,13 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
         price: CurrentPrice,
 
     } = course;
+
+    const isEnrolled = Boolean(
+        user?._id &&
+        course?.studentsEnrolled?.some(
+            (studentId) => studentId?.toString() === user._id.toString()
+        )
+    );
     
     const handleAddToCart = () => {
         if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
@@ -29,7 +36,7 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
         setConfirmationModal({
             text1:"you are not logged in",
             text2:"Please login to add to cart",
-            btn1text:"login",
+            btn1Text:"login",
             btn2Text:"cancel",
             btn1Handler:()=>navigate("/login"),
             btn2Handler: ()=> setConfirmationModal(null),
@@ -55,18 +62,18 @@ const CourseDetailsCard = ({course, setConfirmationModal, handleBuyCourse}) => {
         <div className='flex flex-col gap-y-6'>
             <button className='w-full py-3 rounded-lg bg-brand-primary text-white font-semibold hover:opacity-90 transition-all'
                 onClick={
-                    user && course?.studentsEnrolled.includes(user?._id)
+                    isEnrolled
                     ? ()=> navigate("/dashboard/enrolled-courses")
                     : handleBuyCourse
                 }
             >
                 {
-                    user && course?.studentsEnrolled.includes(user?._id) ? "Go to Course ": "Buy Now"
+                    isEnrolled ? "Go to Course ": "Buy Now"
                 }
             </button>
 
         {
-            (!course?.studentsEnrolled.includes(user?._id)) && (
+            (!isEnrolled) && (
                 <button onClick={handleAddToCart} className='w-full py-3 rounded-lg bg-surface-light border border-surface-border text-white font-semibold hover:bg-surface-dim transition-all'>
                     Add to Cart
                 </button>

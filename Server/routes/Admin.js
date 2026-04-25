@@ -11,12 +11,13 @@ const {
 const { createCategory } = require("../controllers/Categories");
 
 const { auth, isAdmin } = require("../middlewares/auth");
+const { adminReadLimiter, adminMutationLimiter } = require("../middlewares/rateLimiter");
 
 // All routes require admin authentication
-router.get("/students", auth, isAdmin, getAllStudents);
-router.get("/instructors", auth, isAdmin, getAllInstructors);
-router.get("/courses", auth, isAdmin, getAllCoursesAdmin);
-router.get("/stats", auth, isAdmin, getAdminStats);
-router.post("/createCategory", auth, isAdmin, createCategory);
+router.get("/students", auth, isAdmin, adminReadLimiter, getAllStudents);
+router.get("/instructors", auth, isAdmin, adminReadLimiter, getAllInstructors);
+router.get("/courses", auth, isAdmin, adminReadLimiter, getAllCoursesAdmin);
+router.get("/stats", auth, isAdmin, adminReadLimiter, getAdminStats);
+router.post("/createCategory", auth, isAdmin, adminMutationLimiter, createCategory);
 
 module.exports = router;

@@ -68,7 +68,7 @@ exports.notificationEmail = (name, title, message) => {
     <body>
         <div class="container">
             <a href="https://tutor-master.vercel.app"><img class="logo" src="https://i.ibb.co/7Xyj3PC/logo.png"
-                    alt="Tutor Master Logo"></a>
+                    alt="SNotion Logo"></a>
             <div class="message-title">${title}</div>
             <p>Hi ${name},</p>
             <div class="body">
@@ -77,7 +77,7 @@ exports.notificationEmail = (name, title, message) => {
             <a class="cta" href="https://tutor-master.vercel.app/dashboard/notifications">View in Dashboard</a>
             
             <div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a
-                    href="mailto:hello@tutormaster.com">hello@tutormaster.com</a>. We are here to help!</div>
+                    href="mailto:hello@snotion.com">hello@snotion.com</a>. We are here to help!</div>
         </div>
     </body>
     

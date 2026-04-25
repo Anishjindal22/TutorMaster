@@ -6,6 +6,7 @@ const {
     sendCourseNotification,
     sendBroadcastNotification,
     sendTargetedNotification,
+    getCampaignStatus,
     getMyNotifications,
     markAsRead,
     markAllAsRead,
@@ -16,6 +17,7 @@ const {
 router.post("/send-course", auth, isInstructor, sendCourseNotification);
 router.post("/send-broadcast", auth, isAdmin, sendBroadcastNotification);
 router.post("/send-targeted", auth, isAdmin, sendTargetedNotification);
+router.get("/campaign/:campaignId", auth, getCampaignStatus);
 
 // Read APIs
 router.get("/my-notifications", auth, getMyNotifications);

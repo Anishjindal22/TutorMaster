@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const notificationSchema = new mongoose.Schema({
+  campaignId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "NotificationCampaign",
+  },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -39,5 +43,7 @@ const notificationSchema = new mongoose.Schema({
 
 // Index for fast retrieval of a user's notifications, sorted by latest
 notificationSchema.index({ recipient: 1, createdAt: -1 });
+// Enforces one in-app notification per campaign-recipient pair.
+notificationSchema.index({ campaignId: 1, recipient: 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.model("Notification", notificationSchema);

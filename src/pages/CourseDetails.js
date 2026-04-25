@@ -14,6 +14,8 @@ import { BiVideo } from 'react-icons/bi';
 import { MdOutlineArrowForwardIos } from 'react-icons/md';
 import CourseDetailsCard from '../components/core/Course/CourseDetailsCard';
 import { toast } from 'react-hot-toast';
+import { addToCart } from '../slices/cartSlice';
+import { ACCOUNT_TYPE } from '../utils/constants';
 import Footer from '../components/common/Footer.js'
 const CourseDetails = () => {
     const {token} = useSelector((state)=> state.auth)
@@ -78,6 +80,27 @@ const CourseDetails = () => {
         })
     }
 
+    const handleAddToCart = () => {
+        if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+            toast.error("Instructor cannot buy the course");
+            return;
+        }
+
+        if (token) {
+            dispatch(addToCart(courseData?.data?.courseDetails));
+            return;
+        }
+
+        setConfirmationModal({
+            text1: "you are not Logged in",
+            text2: "Please login to add this course to cart",
+            btn1Text: "Login",
+            btn2Text: "Cancel",
+            btn1Handler: () => navigate("/login"),
+            btn2Handler: () => setConfirmationModal(null),
+        });
+    };
+
     if(loading || !courseData) {
         return (
             <div>
@@ -105,6 +128,13 @@ const CourseDetails = () => {
         studentsEnrolled,
         createdAt,
     } = courseData.data?.courseDetails;
+
+        const isEnrolled = Boolean(
+            user?._id &&
+            studentsEnrolled?.some(
+                (studentId) => studentId?.toString() === user._id.toString()
+            )
+        );
 
         const instructorName = instructor
             ? `${instructor?.firstName || ""} ${instructor?.lastName || ""}`.trim() || "Unknown Instructor"
@@ -155,7 +185,11 @@ const CourseDetails = () => {
                         </p>
 
                         <button className='w-full py-3 rounded-lg bg-brand-primary text-white font-semibold hover:opacity-90 transition-all' onClick={handleBuyCourse}>Buy Now</button>
-                        <button className='w-full py-3 rounded-lg bg-surface-light border border-surface-border text-white font-semibold hover:bg-surface-dim transition-all' onClick={handleBuyCourse}>Add to Cart</button>
+                        {
+                            !isEnrolled && (
+                                <button className='w-full py-3 rounded-lg bg-surface-light border border-surface-border text-white font-semibold hover:bg-surface-dim transition-all' onClick={handleAddToCart}>Add to Cart</button>
+                            )
+                        }
                    </div>
                     
                 </div>
