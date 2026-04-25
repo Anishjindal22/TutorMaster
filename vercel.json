@@ -1,9 +1,8 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "https://tutor-master-five.vercel.app/",
-      "permanent": true
+      "destination": "/index.html"
     }
   ]
 }
